@@ -28,6 +28,11 @@ target 'INNavigation' do
   lib_pods
 end
 
+target 'INNavigationTests' do
+  development_pods
+  lib_pods
+end
+
 target 'INNavigationExample' do
   development_pods
 end
