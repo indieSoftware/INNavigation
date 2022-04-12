@@ -22,6 +22,17 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		264E541428055F710074A011 /* NavigationPageElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540928055F710074A011 /* NavigationPageElement.swift */; };
+		264E541528055F710074A011 /* NavigationStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540A28055F710074A011 /* NavigationStack.swift */; };
+		264E541628055F710074A011 /* NavigationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540B28055F710074A011 /* NavigationNode.swift */; };
+		264E541728055F710074A011 /* NavigationStackStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540C28055F710074A011 /* NavigationStackStyle.swift */; };
+		264E541828055F710074A011 /* NavigationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540D28055F710074A011 /* NavigationStyle.swift */; };
+		264E541928055F710074A011 /* NavigationStack+Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540E28055F710074A011 /* NavigationStack+Binding.swift */; };
+		264E541A28055F710074A011 /* View+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E540F28055F710074A011 /* View+.swift */; };
+		264E541B28055F710074A011 /* NavigationOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E541028055F710074A011 /* NavigationOptions.swift */; };
+		264E541C28055F710074A011 /* NavigationPopStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E541128055F710074A011 /* NavigationPopStyle.swift */; };
+		264E541D28055F710074A011 /* NavigatableStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E541228055F710074A011 /* NavigatableStyle.swift */; };
+		264E541E28055F710074A011 /* NavigationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264E541328055F710074A011 /* NavigationFlow.swift */; };
 		26FCE6D327D1F9C600C229DA /* INNavigationExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FCE6D227D1F9C600C229DA /* INNavigationExampleApp.swift */; };
 		26FCE6D727D1F9C700C229DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26FCE6D627D1F9C700C229DA /* Assets.xcassets */; };
 		26FCE6DA27D1F9C700C229DA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26FCE6D927D1F9C700C229DA /* Preview Assets.xcassets */; };
@@ -32,8 +43,6 @@
 		26FCE7A327D276BF00C229DA /* INNavigationExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FCE79B27D276BF00C229DA /* INNavigationExampleView.swift */; };
 		41980954330F1CBB38EA8773 /* Pods_INNavigation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81449F7F71630EA9DE31C59A /* Pods_INNavigation.framework */; };
 		5339E4A327FC1BD6009098C8 /* INNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5339E4A227FC1BD6009098C8 /* INNavigationTests.swift */; };
-		5339E4A527FC1C5A009098C8 /* INNavigationVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5339E4A427FC1C5A009098C8 /* INNavigationVersion.swift */; };
-		5339E4A627FC1D1F009098C8 /* INNavigationVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5339E4A427FC1C5A009098C8 /* INNavigationVersion.swift */; };
 		9A886A5C404411A5FADCA8C6 /* Pods_INNavigationExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB55D7ABEC1132CCF782889E /* Pods_INNavigationExample.framework */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +86,17 @@
 
 /* Begin PBXFileReference section */
 		1D3CF85261265366D7A83882 /* Pods-INNavigation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-INNavigation.debug.xcconfig"; path = "Target Support Files/Pods-INNavigation/Pods-INNavigation.debug.xcconfig"; sourceTree = "<group>"; };
+		264E540928055F710074A011 /* NavigationPageElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationPageElement.swift; sourceTree = "<group>"; };
+		264E540A28055F710074A011 /* NavigationStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationStack.swift; sourceTree = "<group>"; };
+		264E540B28055F710074A011 /* NavigationNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationNode.swift; sourceTree = "<group>"; };
+		264E540C28055F710074A011 /* NavigationStackStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationStackStyle.swift; sourceTree = "<group>"; };
+		264E540D28055F710074A011 /* NavigationStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationStyle.swift; sourceTree = "<group>"; };
+		264E540E28055F710074A011 /* NavigationStack+Binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NavigationStack+Binding.swift"; sourceTree = "<group>"; };
+		264E540F28055F710074A011 /* View+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+.swift"; sourceTree = "<group>"; };
+		264E541028055F710074A011 /* NavigationOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationOptions.swift; sourceTree = "<group>"; };
+		264E541128055F710074A011 /* NavigationPopStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationPopStyle.swift; sourceTree = "<group>"; };
+		264E541228055F710074A011 /* NavigatableStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigatableStyle.swift; sourceTree = "<group>"; };
+		264E541328055F710074A011 /* NavigationFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationFlow.swift; sourceTree = "<group>"; };
 		26FCE6CF27D1F9C600C229DA /* INNavigationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = INNavigationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FCE6D227D1F9C600C229DA /* INNavigationExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INNavigationExampleApp.swift; sourceTree = "<group>"; };
 		26FCE6D627D1F9C700C229DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -87,7 +107,6 @@
 		26FCE70B27D2137300C229DA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		26FCE79B27D276BF00C229DA /* INNavigationExampleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INNavigationExampleView.swift; sourceTree = "<group>"; };
 		5339E4A227FC1BD6009098C8 /* INNavigationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INNavigationTests.swift; sourceTree = "<group>"; };
-		5339E4A427FC1C5A009098C8 /* INNavigationVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INNavigationVersion.swift; sourceTree = "<group>"; };
 		67BF383CCDD0E96374B9F2A1 /* Pods-INNavigationExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-INNavigationExample.debug.xcconfig"; path = "Target Support Files/Pods-INNavigationExample/Pods-INNavigationExample.debug.xcconfig"; sourceTree = "<group>"; };
 		81449F7F71630EA9DE31C59A /* Pods_INNavigation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_INNavigation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2E8259FAF6787CBFA87BD66 /* Pods-INNavigation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-INNavigation.release.xcconfig"; path = "Target Support Files/Pods-INNavigation/Pods-INNavigation.release.xcconfig"; sourceTree = "<group>"; };
@@ -124,6 +143,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		264E540828055F710074A011 /* NavigationStack */ = {
+			isa = PBXGroup;
+			children = (
+				264E541228055F710074A011 /* NavigatableStyle.swift */,
+				264E541328055F710074A011 /* NavigationFlow.swift */,
+				264E540B28055F710074A011 /* NavigationNode.swift */,
+				264E541028055F710074A011 /* NavigationOptions.swift */,
+				264E540928055F710074A011 /* NavigationPageElement.swift */,
+				264E541128055F710074A011 /* NavigationPopStyle.swift */,
+				264E540A28055F710074A011 /* NavigationStack.swift */,
+				264E540C28055F710074A011 /* NavigationStackStyle.swift */,
+				264E540E28055F710074A011 /* NavigationStack+Binding.swift */,
+				264E540D28055F710074A011 /* NavigationStyle.swift */,
+				264E540F28055F710074A011 /* View+.swift */,
+			);
+			path = NavigationStack;
+			sourceTree = "<group>";
+		};
 		26FCE6C627D1F9C600C229DA = {
 			isa = PBXGroup;
 			children = (
@@ -185,8 +222,8 @@
 		26FCE6E827D1FAD600C229DA /* INNavigation */ = {
 			isa = PBXGroup;
 			children = (
+				264E540828055F710074A011 /* NavigationStack */,
 				26FCE6E927D1FAD600C229DA /* INNavigation.h */,
-				5339E4A427FC1C5A009098C8 /* INNavigationVersion.swift */,
 			);
 			path = INNavigation;
 			sourceTree = "<group>";
@@ -512,7 +549,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				26FCE7A327D276BF00C229DA /* INNavigationExampleView.swift in Sources */,
-				5339E4A627FC1D1F009098C8 /* INNavigationVersion.swift in Sources */,
 				26FCE6D327D1F9C600C229DA /* INNavigationExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -521,6 +557,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				264E541728055F710074A011 /* NavigationStackStyle.swift in Sources */,
+				264E541828055F710074A011 /* NavigationStyle.swift in Sources */,
+				264E541928055F710074A011 /* NavigationStack+Binding.swift in Sources */,
+				264E541528055F710074A011 /* NavigationStack.swift in Sources */,
+				264E541A28055F710074A011 /* View+.swift in Sources */,
+				264E541628055F710074A011 /* NavigationNode.swift in Sources */,
+				264E541E28055F710074A011 /* NavigationFlow.swift in Sources */,
+				264E541D28055F710074A011 /* NavigatableStyle.swift in Sources */,
+				264E541C28055F710074A011 /* NavigationPopStyle.swift in Sources */,
+				264E541B28055F710074A011 /* NavigationOptions.swift in Sources */,
+				264E541428055F710074A011 /* NavigationPageElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,7 +575,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5339E4A527FC1C5A009098C8 /* INNavigationVersion.swift in Sources */,
 				5339E4A327FC1BD6009098C8 /* INNavigationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -674,6 +720,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 67BF383CCDD0E96374B9F2A1 /* Pods-INNavigationExample.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -705,6 +752,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D8B4F37595AC576D2D0591E2 /* Pods-INNavigationExample.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -801,6 +849,7 @@
 		26FCE70327D1FAD700C229DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;
@@ -824,6 +873,7 @@
 		26FCE70427D1FAD700C229DA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;

@@ -3,7 +3,7 @@ import SwiftUI
 
 struct INNavigationExampleView: View {
 	var body: some View {
-		Text(INNavigationVersion.version.description)
+		Text("Foo")
 	}
 }
 
