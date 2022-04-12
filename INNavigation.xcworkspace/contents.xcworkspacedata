@@ -5,6 +5,9 @@
       location = "group:INNavigation.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Sources/NavigationStackDemo/NavigationStackDemo.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>

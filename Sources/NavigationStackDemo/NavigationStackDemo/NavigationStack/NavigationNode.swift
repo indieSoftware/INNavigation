@@ -1,0 +1,114 @@
+//
+//  NavigationNode.swift
+//
+//
+//  Created by Alex Nagy on 16.11.2021.
+//
+
+import Foundation
+import SwiftUI
+
+/// A view that represents a linked list of views, each presenting the next in
+/// a navigation stack.
+indirect enum NavigationNode<Page, V: View>: View {
+	case view(V, presenting: NavigationNode<Page, V>, stack: Binding<[NavigationPageElement<Page>]>, index: Int, options: NavigationOptions)
+	case end
+
+	private var isActiveBinding: Binding<Bool> {
+		switch self {
+		case .end, .view(_, .end, _, _, _):
+			return .constant(false)
+		case let .view(_, .view, stack, index, _):
+			return Binding(
+				get: {
+					stack.wrappedValue.count > index + 1
+				},
+				set: { isPresented in
+					guard !isPresented else { return }
+					guard stack.wrappedValue.count > index + 1 else { return }
+					stack.wrappedValue = Array(stack.wrappedValue.prefix(index + 1))
+				}
+			)
+		}
+	}
+
+	@ViewBuilder
+	private var presentingView: some View {
+		switch self {
+		case .end:
+			EmptyView()
+		case let .view(view, _, _, _, _):
+			view
+		}
+	}
+
+	@ViewBuilder
+	private var presentedView: some View {
+		switch self {
+		case .end:
+			EmptyView()
+		case let .view(_, node, _, _, _):
+			node
+		}
+	}
+
+	private var navigationOptions: NavigationOptions? {
+		switch self {
+		case .end, .view(_, .end, _, _, _):
+			return nil
+		case let .view(_, .view(_, _, _, _, options), _, _, _):
+			return options
+		}
+	}
+
+	var body: some View {
+		presentingView
+			.background(
+				NavigationLink(
+					destination: presentedView
+						.onDisappear(perform: {
+							if navigationOptions?.style == NavigationStyle.regular(isDetailLink: true) || navigationOptions?.style == NavigationStyle
+								.regular(isDetailLink: false), !isActiveBinding.wrappedValue
+							{
+								navigationOptions?.onDismiss?()
+							}
+						}),
+					isActive: navigationOptions?.style == NavigationStyle.regular(isDetailLink: true) || navigationOptions?.style == NavigationStyle
+						.regular(isDetailLink: false) ? isActiveBinding : .constant(false),
+					label: EmptyView.init
+				)
+				#if os(iOS)
+				.isDetailLink(navigationOptions?.style == NavigationStyle.regular(isDetailLink: true) ? true : false)
+				#endif
+				.hidden()
+			)
+		#if !os(macOS)
+			.fullScreenCover(
+				isPresented: navigationOptions?.style == .fullScreenCover ? isActiveBinding : .constant(false),
+				onDismiss: navigationOptions?.onDismiss,
+				content: {
+					if let navigationOptions = navigationOptions,
+					   navigationOptions.navigatable
+					{
+						presentedView.navigatable()
+					} else {
+						presentedView
+					}
+				}
+			)
+		#endif
+			.sheet(
+				isPresented: navigationOptions?.style == .sheet ? isActiveBinding : .constant(false),
+				onDismiss: navigationOptions?.onDismiss,
+				content: {
+					if let navigationOptions = navigationOptions,
+					   navigationOptions.navigatable
+					{
+						presentedView.navigatable()
+					} else {
+						presentedView
+					}
+				}
+			)
+	}
+}
