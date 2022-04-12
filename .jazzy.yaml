@@ -1,0 +1,22 @@
+github_url: https://github.com/indieSoftware/INNavigation
+author: indie-Software
+theme: fullwidth
+title: INNavigation
+module: INNavigation
+clean: true
+output: ./docs
+readme: README.md
+skip_undocumented: false
+hide_documentation_coverage: false
+min_acl: public
+sdk: iphone
+objc: false
+swift_build_tool: xcodebuild
+xcodebuild_arguments:
+  - build
+  - -workspace
+  - INNavigation.xcworkspace
+  - -scheme
+  - INNavigation
+  - -destination
+  - platform=iOS Simulator,OS=latest,name=iPhone 13
