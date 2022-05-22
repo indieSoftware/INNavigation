@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
   spec.name         = "INNavigation"
-  spec.version = "1.0.1" # auto-generated
-  spec.swift_versions = ['5.6'] # auto-generated
+ spec.version = "1.0.2" # auto-generated
+ spec.swift_versions = ['5.6'] # auto-generated
   spec.summary      = "TODO: Provide lib's summary."
   spec.description  = <<-DESC
   Library INNavigation
