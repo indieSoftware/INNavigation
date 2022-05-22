@@ -1,7 +1,7 @@
 #!/bin/bash
 # Prepares the project for a new version of the lib.
 # Intended to be run manually from within the project folder.
-# Arguments: 
+# Arguments:
 # string: The new marketing version, e.g. 1.2
 
 # Assure 1 argument is passed.
@@ -19,6 +19,6 @@ agvtool new-marketing-version $1
 sed -i '' "3s/.*/ spec.version = \"$1\" # auto-generated/" INNavigation.podspec
 # Replace the 4th line in the podspec to update the swift version read from the file.
 SWIFT_VERSION=$(<.swift-version)
-sed -i '' "4s/.*/ spec.swift_version = \"$SWIFT_VERSION\" # auto-generated/" INNavigation.podspec
+sed -i '' "4s/.*/ spec.swift_versions = \['$SWIFT_VERSION']\ # auto-generated/" INNavigation.podspec
 # Lint podspec to be sure everything is still valid.
-pod lib lint INNavigation.podspec
+pod spec lint INNavigation.podspec --allow-warnings
