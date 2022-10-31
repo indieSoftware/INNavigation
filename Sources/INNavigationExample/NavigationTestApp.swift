@@ -5,8 +5,8 @@ import SwiftUI
 struct NavigationTestApp: App {
 	var body: some Scene {
 		WindowGroup {
-			RouterView<ExampleRoute>()
-				.environmentObject(Router<ExampleRoute>(root: .exampleView(title: "Root")))
+			RouterView()
+				.environmentObject(Router(root: .exampleView(title: "Root")))
 		}
 	}
 }

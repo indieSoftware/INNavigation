@@ -2,9 +2,9 @@ import SwiftUI
 
 /// The root view which wrapps a `NavigationStack` and a vertical navigation modifier
 /// to make it possible to navigate horizontally and vertically from this.
-public struct RouterView<RouterType: Route>: View {
+public struct RouterView: View {
 	/// The router which provides the paths for the navigation stack.
-	@EnvironmentObject private var router: Router<RouterType>
+	@EnvironmentObject private var router: Router
 
 	/// The vertical index of this path.
 	/// Zero means this is the root path and any number above represents the number
@@ -26,19 +26,55 @@ public struct RouterView<RouterType: Route>: View {
 	}
 
 	public var body: some View {
-		if index < router.paths.count {
-			NavigationStack(path: $router.paths[index].routes) {
-				router.paths[index].root.view
-					// Add horizontal navigation possibility.
-					.navigationDestination(for: RouterType.self) { route in
-						route.view
-							.environmentObject(router)
-					}
-					// Add vertical navigation possibility.
-					// The binding is responsible to show or hide the next vertical path.
-					.verticalNavigation(for: RouterType.self, binding: router.verticalBinding(index: index + 1))
-					// Inject the router dependency to the view hierarchy.
-					.environmentObject(router)
+		VStack(spacing: .zero) {
+			if index < router.paths.count, let path = $router.paths[index] {
+				// Navigation view.
+				let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
+				lastRoute.screen.navigationBar
+					.animation(.easeInOut, value: lastRoute)
+
+				// Content view.
+				NavigationStack(path: path.routes) {
+					let rootRoute = path.wrappedValue.root
+					rootRoute.screen.contentView
+						.navigationBarHidden(rootRoute.screen.showCustomNavigationBar)
+						// Add horizontal navigation possibility.
+						.navigationDestination(for: Route.self) { route in
+							let screen = route.screen
+							screen.contentView
+								.navigationBarHidden(screen.showCustomNavigationBar)
+								.environmentObject(router)
+						}
+						// Add vertical navigation possibility.
+						// The binding is responsible to show or hide the next vertical path.
+						.verticalNavigation(binding: router.verticalBinding(index: index + 1))
+						// Inject the router dependency to the view hierarchy.
+						.environmentObject(router)
+				}
+			}
+		}
+	}
+
+	private var contentView: some View {
+		Group {
+			if index < router.paths.count, let path = $router.paths[index] {
+				NavigationStack(path: path.routes) {
+					let rootRoute = path.wrappedValue.root
+					rootRoute.screen.contentView
+						.navigationBarHidden(rootRoute.screen.showCustomNavigationBar)
+						// Add horizontal navigation possibility.
+						.navigationDestination(for: Route.self) { route in
+							let screen = route.screen
+							screen.contentView
+								.navigationBarHidden(screen.showCustomNavigationBar)
+								.environmentObject(router)
+						}
+						// Add vertical navigation possibility.
+						// The binding is responsible to show or hide the next vertical path.
+						.verticalNavigation(binding: router.verticalBinding(index: index + 1))
+						// Inject the router dependency to the view hierarchy.
+						.environmentObject(router)
+				}
 			}
 		}
 	}

@@ -29,7 +29,7 @@ public extension Router {
 	}
 
 	/// Dismisses all vertical paths each after another animated and then presents a new route.
-	func dismissToRootAndPresent(_ route: RouterType, type: PresentationType) async {
+	func dismissToRootAndPresent(_ route: Route, type: PresentationType) async {
 		await multiDismissToRoot()
 		present(route, type: type)
 		await RouterSleep.vertical.sleep()

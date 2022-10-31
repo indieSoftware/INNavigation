@@ -2,7 +2,7 @@ import INNavigation
 import SwiftUI
 
 struct ExampleView: View {
-	@EnvironmentObject var router: Router<ExampleRoute>
+	@EnvironmentObject var router: Router
 	let title: String
 
 	var body: some View {
@@ -33,6 +33,12 @@ struct ExampleView: View {
 						}
 					} label: {
 						Text("Multi-pop to root")
+					}
+
+					Button {
+						router.push(.view1)
+					} label: {
+						Text("Push View1")
 					}
 				}
 
@@ -115,4 +121,15 @@ struct ExampleView: View {
 		}
 		.navigationBarTitle(Text(title))
 	}
+}
+
+struct ExampleViewScreen: Screen {
+	let title: String
+	var contentView: AnyView { AnyView(ExampleView(title: title)) }
+	var showCustomNavigationBar: Bool { false }
+	var navigationBar: AnyView { AnyView(EmptyView()) }
+}
+
+extension Route {
+	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
 }

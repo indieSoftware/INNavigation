@@ -3,25 +3,26 @@ import SwiftUI
 
 /// The router which provides a functional interface for the navigation between screens.
 @MainActor
-public class Router<RouterType: Route>: ObservableObject, Sendable {
+public class Router: ObservableObject, Sendable {
 	/// The list of horizontal paths which makes this the vertical path.
 	/// Whenever a new modal screen is shown a new path is added to this list.
 	/// Each path in this array represents a horizontal path which reflects the
 	/// views in a navigation stack so they can be pushed and popped on each level.
 	/// There is always at least one path in this list which represents the root view.
 	/// When setting a new path then there must be at least one path in the list.
-	var paths: [HorizontalPath<RouterType>] {
+	var paths: [HorizontalPath] {
 		get {
 			horizontalPaths
 		}
 		set {
 			precondition(!newValue.isEmpty, "There must be at least one path to provide a root screen")
 			horizontalPaths = newValue
+			print("Paths: \(newValue)")
 		}
 	}
 
 	/// The horizontal paths hold as a private property.
-	@Published private var horizontalPaths: [HorizontalPath<RouterType>]
+	@Published private var horizontalPaths: [HorizontalPath]
 
 	/// Returns the number of routes in the current horizontal path stack.
 	/// 0 means there are no views pushed on top of the root.
@@ -36,7 +37,7 @@ public class Router<RouterType: Route>: ObservableObject, Sendable {
 	}
 
 	/// Initializes the router with a root view representation.
-	public nonisolated init(root: RouterType) {
+	public nonisolated init(root: Route) {
 		// The presentation type for the root path is not important.
 		_horizontalPaths = Published(initialValue: [HorizontalPath(root: root, presentationType: .fullScreen)])
 	}
@@ -48,14 +49,14 @@ public class Router<RouterType: Route>: ObservableObject, Sendable {
 	/// relative to the old state.
 	/// - parameter routes: The routes which replaces the current path.
 	/// Might also be empty.
-	public func set(routes: RouterType...) {
+	public func set(routes: Route...) {
 		paths[lastIndex].routes = routes
 	}
 
 	/// Adds a new view to the horizontal path.
 	/// Will be animated.
 	/// - parameter route: The view representing route to push onto the navigation stack.
-	public func push(_ route: RouterType) {
+	public func push(_ route: Route) {
 		paths[lastIndex].routes.append(route)
 	}
 
@@ -96,8 +97,8 @@ public class Router<RouterType: Route>: ObservableObject, Sendable {
 	 - parameter route: The view representing route.
 	 - parameter type: The type of vertical presentation, e.g. as a sheet or full-screen covering modal view.
 	 */
-	public func present(_ route: RouterType, type: PresentationType = .sheet) {
-		let routerPath = HorizontalPath<RouterType>(root: route, presentationType: type)
+	public func present(_ route: Route, type: PresentationType = .sheet) {
+		let routerPath = HorizontalPath(root: route, presentationType: type)
 		paths.append(routerPath)
 	}
 
