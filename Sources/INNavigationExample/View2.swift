@@ -7,6 +7,8 @@ struct View2: View {
 	var body: some View {
 		ZStack {
 			Color.indigo.opacity(0.1)
+				.ignoresSafeArea()
+
 			VStack(spacing: 20) {
 				Text("View 2")
 
@@ -18,22 +20,31 @@ struct View2: View {
 
 				Spacer()
 			}
-//			.navigationBar {
-//				HStack {
-//					Text("View 2 Title")
-//				}
-//				.frame(height: 90)
-//				.background(Color.blue)
-//			}
-//			.navigationBarTitle(Text("View2"))
+			.padding(.top, 90)
 		}
+	}
+}
+
+struct View2NavBar: View {
+	let navBarNamespace: Namespace.ID
+
+	var body: some View {
+		ZStack {
+			Color.orange
+				.matchedGeometryEffect(id: "background", in: navBarNamespace)
+				.opacity(0.3)
+			Text("View 2 Title")
+				.matchedGeometryEffect(id: "title", in: navBarNamespace)
+		}
+		.frame(height: 90)
 	}
 }
 
 struct View2Screen: Screen {
 	var contentView: AnyView { AnyView(View2()) }
-	var showCustomNavigationBar: Bool { true }
-	var navigationBar: AnyView { AnyView(Color.orange.opacity(0.3).frame(height: 90)) }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
+	var height: Double { 90 }
+	var hideSystemNavigationBar: Bool { true }
 }
 
 extension Route {

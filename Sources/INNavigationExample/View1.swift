@@ -24,21 +24,31 @@ struct View1: View {
 
 				Spacer()
 			}
-//			.navigationBar {
-//				HStack {
-//					Text("View 1 Title")
-//				}
-//				.frame(height: 50)
-//				.background(Color.green)
-//			}
+			.padding(.top, 50)
 		}
+	}
+}
+
+struct View1NavBar: View {
+	let navBarNamespace: Namespace.ID
+
+	var body: some View {
+		ZStack {
+			Color.green
+				.matchedGeometryEffect(id: "background", in: navBarNamespace)
+				.opacity(0.3)
+			Text("View 1 Title")
+				.matchedGeometryEffect(id: "title", in: navBarNamespace)
+		}
+		.frame(height: 50)
 	}
 }
 
 struct View1Screen: Screen {
 	var contentView: AnyView { AnyView(View1()) }
-	var showCustomNavigationBar: Bool { true }
-	var navigationBar: AnyView { AnyView(Color.green.opacity(0.3).frame(height: 50)) }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView { AnyView(View1NavBar(navBarNamespace: namespaceId)) }
+	var height: Double { 50 }
+	var hideSystemNavigationBar: Bool { true }
 }
 
 extension Route {

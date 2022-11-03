@@ -40,6 +40,12 @@ struct ExampleView: View {
 					} label: {
 						Text("Push View1")
 					}
+
+					Button {
+						router.push(.view3)
+					} label: {
+						Text("Push View3")
+					}
 				}
 
 				VStack {
@@ -126,8 +132,9 @@ struct ExampleView: View {
 struct ExampleViewScreen: Screen {
 	let title: String
 	var contentView: AnyView { AnyView(ExampleView(title: title)) }
-	var showCustomNavigationBar: Bool { false }
-	var navigationBar: AnyView { AnyView(EmptyView()) }
+	func navigationBar(namespaceId _: Namespace.ID) -> AnyView { .none }
+	var height: Double { 0 }
+	var hideSystemNavigationBar: Bool { false }
 }
 
 extension Route {
