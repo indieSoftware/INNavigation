@@ -55,9 +55,7 @@ struct View2NavBar: View {
 struct View2Screen: Screen {
 	let id: String = UUID().uuidString
 	var contentView: AnyView { AnyView(View2()) }
-	func navigationBar(namespaceId: Namespace.ID) -> AnyView { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
-	var height: Double { 90 }
-	var hideSystemNavigationBar: Bool { true }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
 }
 
 extension Route {

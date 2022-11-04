@@ -62,9 +62,7 @@ struct SubView3: View {
 struct View3Screen: Screen {
 	let id: String = UUID().uuidString
 	var contentView: AnyView { AnyView(View3()) }
-	func navigationBar(namespaceId _: Namespace.ID) -> AnyView { .noNavBar }
-	var height: Double { 0 }
-	var hideSystemNavigationBar: Bool { false }
+	func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
 }
 
 extension Route {

@@ -53,9 +53,7 @@ struct View1NavBar: View {
 struct View1Screen: Screen {
 	let id: String = UUID().uuidString
 	var contentView: AnyView { AnyView(View1()) }
-	func navigationBar(namespaceId: Namespace.ID) -> AnyView { AnyView(View1NavBar(navBarNamespace: namespaceId)) }
-	var height: Double { 50 }
-	var hideSystemNavigationBar: Bool { true }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View1NavBar(navBarNamespace: namespaceId)) }
 }
 
 extension Route {

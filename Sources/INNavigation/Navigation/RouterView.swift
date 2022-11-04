@@ -40,13 +40,13 @@ public struct RouterView: View {
 					// The content view.
 					rootRoute.screen.contentView
 						// Show or hide the system nav bar for the root screen.
-						.navigationBarHidden(rootRoute.screen.hideSystemNavigationBar)
+						.navigationBarHidden(rootRoute.screen.navigationBar(namespaceId: navigationBarNamespace) != nil)
 						// Add horizontal navigation possibility.
 						.navigationDestination(for: Route.self) { route in
 							let screen = route.screen
 							screen.contentView
 								// Show or hide the system nav bar depending of the current screen.
-								.navigationBarHidden(screen.hideSystemNavigationBar)
+								.navigationBarHidden(screen.navigationBar(namespaceId: navigationBarNamespace) != nil)
 								// Inject the router dependency to the view hierarchy.
 								.environmentObject(router)
 						}
@@ -66,18 +66,20 @@ public struct RouterView: View {
 					VStack(spacing: .zero) {
 						// Create the custom nav bar with the namespace passed so that each
 						// nav bar can match the animation for sub-views.
-						lastRoute.screen.navigationBar(namespaceId: navigationBarNamespace)
-							// Match each custom nav bar with the next one so that even
-							// custom nav bars which are not using the namespace animate somehow.
-							.matchedGeometryEffect(id: "navigationBar", in: navigationBarNamespace)
-							// Mark each custom nav bar as an individual one for SwiftUI,
-							// necessary for the geometry effect to distinct the custom nav bars.
-							.id(lastRoute)
+						(
+							lastRoute.screen.navigationBar(namespaceId: navigationBarNamespace)
+								?? AnyView(Color.clear.frame(height: .zero))
+						)
+						// Match each custom nav bar with the next one so that even
+						// custom nav bars which are not using the namespace animate somehow.
+						.matchedGeometryEffect(id: "navigationBar", in: navigationBarNamespace)
+						// Mark each custom nav bar as an individual one for SwiftUI,
+						// necessary for the geometry effect to distinct the custom nav bars.
+						.id(lastRoute)
 					}
 					// Clip the frame of the nav bar during transition, which is kind of
 					// important for transitions from the system nav bar to the custom nav bar.
 					.clipped()
-//					.frame(height: lastRoute.screen.height)
 					// Animate the nav bar transition at all during the screen transition.
 					.animation(.easeOut, value: lastRoute)
 
