@@ -34,18 +34,6 @@ struct ExampleView: View {
 					} label: {
 						Text("Multi-pop to root")
 					}
-
-					Button {
-						router.push(.view1)
-					} label: {
-						Text("Push View1")
-					}
-
-					Button {
-						router.push(.view3)
-					} label: {
-						Text("Push View3")
-					}
 				}
 
 				VStack {
@@ -118,6 +106,14 @@ struct ExampleView: View {
 
 				VStack {
 					Button {
+						router.push(.view1)
+					} label: {
+						Text("Push View1")
+					}
+				}
+
+				VStack {
+					Button {
 						print("Router-paths: \(router.description)")
 					} label: {
 						Text("Print paths")
@@ -129,14 +125,14 @@ struct ExampleView: View {
 	}
 }
 
-struct ExampleViewScreen: Screen {
-	let id: String = UUID().uuidString
-	let title: String
-	var contentView: AnyView { AnyView(ExampleView(title: title)) }
-	func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
-	var hideSystemNavigationBar: Bool { false }
-}
-
 extension Route {
+	struct ExampleViewScreen: Screen {
+		let id: String = UUID().uuidString
+		let title: String
+		var contentView: AnyView { AnyView(ExampleView(title: title)) }
+		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
+		var hideSystemNavigationBar: Bool { false }
+	}
+
 	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
 }

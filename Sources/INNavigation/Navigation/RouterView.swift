@@ -86,6 +86,8 @@ public struct RouterView: View {
 					// Push the nav bar at the top of the screen.
 					Spacer()
 				}
+				// Inject the router dependency to the view hierarchy.
+				.environmentObject(router)
 			}
 		}
 	}

@@ -52,12 +52,12 @@ struct View2NavBar: View {
 	}
 }
 
-struct View2Screen: Screen {
-	let id: String = UUID().uuidString
-	var contentView: AnyView { AnyView(View2()) }
-	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
-}
-
 extension Route {
+	struct View2Screen: Screen {
+		let id: String = UUID().uuidString
+		var contentView: AnyView { AnyView(View2()) }
+		func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
+	}
+
 	static var view2: Route { Route(View2Screen()) }
 }
