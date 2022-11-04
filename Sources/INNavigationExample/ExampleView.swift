@@ -130,9 +130,10 @@ struct ExampleView: View {
 }
 
 struct ExampleViewScreen: Screen {
+	let id: String = UUID().uuidString
 	let title: String
 	var contentView: AnyView { AnyView(ExampleView(title: title)) }
-	func navigationBar(namespaceId _: Namespace.ID) -> AnyView { .none }
+	func navigationBar(namespaceId _: Namespace.ID) -> AnyView { .noNavBar }
 	var height: Double { 0 }
 	var hideSystemNavigationBar: Bool { false }
 }

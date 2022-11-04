@@ -13,6 +13,18 @@ struct View2: View {
 				Text("View 2")
 
 				Button {
+					router.push(.view1)
+				} label: {
+					Text("Push View1")
+				}
+
+				Button {
+					router.push(.view2)
+				} label: {
+					Text("Push View2")
+				}
+
+				Button {
 					router.pop()
 				} label: {
 					Text("Pop")
@@ -41,6 +53,7 @@ struct View2NavBar: View {
 }
 
 struct View2Screen: Screen {
+	let id: String = UUID().uuidString
 	var contentView: AnyView { AnyView(View2()) }
 	func navigationBar(namespaceId: Namespace.ID) -> AnyView { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
 	var height: Double { 90 }
