@@ -18,21 +18,11 @@ public class Router: ObservableObject, Sendable {
 		set {
 			precondition(!newValue.isEmpty, "There must be at least one path to provide a root screen")
 			horizontalPaths = newValue
-			print("Paths: \(newValue)")
 		}
 	}
 
 	/// The horizontal paths hold as a private property.
 	@Published private var horizontalPaths: [HorizontalPath]
-
-	/// Only when true then the router will accept new transition calls, ignoring any when false.
-	private var enabled: Bool = true
-
-	/// Returns the number of routes in the current horizontal path stack.
-	/// 0 means there are no views pushed on top of the root.
-	public var numberOfPushedViews: Int {
-		paths[lastIndex].routes.count
-	}
 
 	/// A conventient accessor to get the index of the last path in the `paths` list.
 	private var lastIndex: Int {
@@ -40,42 +30,96 @@ public class Router: ObservableObject, Sendable {
 		return paths.count - 1
 	}
 
+	/// Returns the number of routes in the current horizontal path stack.
+	/// 0 means there are no views pushed on top of the root.
+	public var numberOfPushedViews: Int {
+		paths[lastIndex].routes.count
+	}
+
+	/// Returns the number of routes in the current vertical path stack.
+	/// There should always be at least one vertical path, that means the
+	/// returned number is 1 or higher.
+	public var numberOfPresentedViews: Int {
+		paths.count
+	}
+
+	/// Only when true then the router will accept new transition calls, ignoring any when false.
+	private var enabled: Bool = true
+
 	/// Initializes the router with a root view representation.
 	public nonisolated init(root: Route) {
 		// The presentation type for the root path is not important.
 		_horizontalPaths = Published(initialValue: [HorizontalPath(root: root, presentationType: .fullScreen)])
 	}
 
-	/// Disables the router for a duration.
+	/// A helper which ensures that the router is enabled before applying the transition
+	/// to the path via `task`, waiting for it to finish and re-enabling the router again.
 	///
-	/// This method is a workaround for not having the possibility to get called back when
-	/// the `NavigationStack` or `sheet` transition animation has finished.
-	///
-	/// - parameter duration: The amount of time in seconds the router should be disabled.
-	/// Usually `.routerTransitionDurationHorizontal` or
-	/// `.routerTransitionDurationVertical` should be passed.
-	public func disable(duration: Double) {
-		enabled = false
-		Task {
-			try? await Task.sleep(seconds: duration)
+	/// - parameter direction: The transition direction which indicates for how
+	/// long to block the router for additional transitions.
+	/// - parameter task: The real path manipulation to apply.
+	private nonisolated func transition(direction: RoutingDirection, task: @MainActor @Sendable () -> Void) async {
+		let shouldContinue = await MainActor.run {
+			guard enabled else { return false }
+			enabled = false
+			task()
+			return true
+		}
+		guard shouldContinue else { return }
+		await direction.sleep()
+		await MainActor.run {
 			enabled = true
 		}
 	}
 
-	// MARK: - Navigation
+	// MARK: - Horizontal Navigation
+
+	/// Spawns a Task and runs the async method `set(routes:)`.
+	public func set(routes: Route...) {
+		Task {
+			await set(routes: routes)
+		}
+	}
 
 	/// Sets multiple routes at once replacing the current path.
 	///
-	/// Will be animated only when one screen has been added or removed
-	/// relative to the old state.
-	/// Does not block the router, therefore, when using this method consider
-	/// also to call `disable(duration: .routerTransitionDurationHorizontal)`.
+	/// Will be animated with a single push or pop when there is a difference in the
+	/// route's count.
 	///
 	/// - parameter routes: The routes which replaces the current path.
 	/// Might also be empty.
-	public func set(routes: Route...) {
-		guard enabled else { return }
+	public nonisolated func set(routes: Route...) async {
+		await set(routes: routes)
+	}
+
+	/// Similar to `set(routes: Route...)`.
+	public nonisolated func set(routes: [Route]) async {
+		let shouldContinue = await MainActor.run {
+			guard enabled else { return false }
+			enabled = false
+			let willBeAnimated = numberOfPushedViews == routes.count + 1 || numberOfPushedViews + 1 == routes.count
+			applySet(routes: routes)
+			if !willBeAnimated {
+				enabled = true
+			}
+			return willBeAnimated
+		}
+		guard shouldContinue else { return }
+		await RoutingDirection.horizontal.sleep()
+		await MainActor.run {
+			enabled = true
+		}
+	}
+
+	func applySet(routes: [Route]) {
 		paths[lastIndex].routes = routes
+	}
+
+	/// Spawns a Task and runs the async method `push(_:)`.
+	public func push(_ route: Route) {
+		Task {
+			await push(route)
+		}
 	}
 
 	/// Adds a new view to the horizontal path.
@@ -83,29 +127,65 @@ public class Router: ObservableObject, Sendable {
 	/// Will be animated and blocks the router for that time.
 	///
 	/// - parameter route: The view representing route to push onto the navigation stack.
-	public func push(_ route: Route) {
-		guard enabled else { return }
-		disable(duration: .routerTransitionDurationHorizontal)
+	public nonisolated func push(_ route: Route) async {
+		await transition(direction: .horizontal) {
+			applyPush(route)
+		}
+	}
+
+	func applyPush(_ route: Route) {
 		paths[lastIndex].routes.append(route)
+	}
+
+	/// Spawns a Task and runs the async method `pop()`.
+	public func pop() {
+		Task {
+			await pop()
+		}
 	}
 
 	/// Removes the last view in the current horizontal path.
 	///
 	/// Will be animated and blocks the router for that time.
 	/// Does nothing if there are no views pushed.
-	public func pop() {
-		guard enabled else { return }
-		guard !paths[lastIndex].routes.isEmpty else { return }
+	public nonisolated func pop() async {
+		await transition(direction: .horizontal) {
+			applyPop()
+		}
+	}
 
-		disable(duration: .routerTransitionDurationHorizontal)
+	func applyPop() {
+		guard numberOfPushedViews > 0 else { return }
 		paths[lastIndex].routes.removeLast()
 	}
 
-	/// Removes all views from the current horizontal path.
-	/// This will not be animated and does not block the router.
+	/// Spawns a Task and runs the async method `popToRoot()`.
 	public func popToRoot() {
-		guard enabled else { return }
+		Task {
+			await popToRoot()
+		}
+	}
+
+	/// Removes all views from the current horizontal path.
+	/// This will only be animated when there is only one single view in the view hierarchy.
+	public nonisolated func popToRoot() async {
+		let willBeAnimated = await MainActor.run {
+			numberOfPushedViews == 1
+		}
+		await transition(direction: willBeAnimated ? .horizontal : .nonspecific) {
+			applyPopToRoot()
+		}
+	}
+
+	func applyPopToRoot() {
 		paths[lastIndex].routes.removeAll()
+	}
+
+	/// Spawns a Task and runs the async method `popAfter(index:)`.
+	public func popAfter(index: Int) {
+		Task {
+			await popAfter(index: index)
+		}
 	}
 
 	/// Removes all views from the current horizontal path after the given index.
@@ -114,19 +194,34 @@ public class Router: ObservableObject, Sendable {
 	/// or when negative.
 	///
 	/// Will be animated only if exactly one view has been popped.
-	/// Does not block the router, therefore, when using this method consider
-	/// also to call `disable(duration: .routerTransitionDurationHorizontal)`.
 	///
 	/// - parameter index: The index of the route from which all following routes will be removed.
-	/// The index is 0 based while 0 indicates the first pushed screen.
-	/// When also the first pushed screen should be popped, then use `popToRoot` instead.
-	public func popAfter(index: Int) {
-		guard enabled else { return }
-		let amountToRemove = paths[lastIndex].routes.count - 1 - index
-		guard paths[lastIndex].routes.count > amountToRemove, amountToRemove > 0 else {
+	/// The index is 0 based with 0 pointing to the root view and thus 1 represents the first pushed screen.
+	/// Using an index of 0 does the same as `popToRoot`.
+	public nonisolated func popAfter(index: Int) async {
+		let willBeAnimated = await MainActor.run {
+			numberOfPushedViews - index == 1
+		}
+		await transition(direction: willBeAnimated ? .horizontal : .nonspecific) {
+			applyPopAfter(index: index)
+		}
+	}
+
+	func applyPopAfter(index: Int) {
+		let amountToRemove = numberOfPushedViews - index
+		guard numberOfPushedViews >= amountToRemove, amountToRemove > 0 else {
 			return
 		}
 		paths[lastIndex].routes.removeLast(amountToRemove)
+	}
+
+	// MARK: - Vertical Navigation
+
+	/// Spawns a Task and runs the async method `present(_:type:)`.
+	public func present(_ route: Route, type: PresentationType = .sheet) {
+		Task {
+			await present(route, type: type)
+		}
 	}
 
 	/// Adds a new view to the vertical path which will be the root for the new horizontal path.
@@ -135,63 +230,37 @@ public class Router: ObservableObject, Sendable {
 	///
 	/// - parameter route: The view representing route.
 	/// - parameter type: The type of vertical presentation, e.g. as a sheet or full-screen covering modal view.
-	public func present(_ route: Route, type: PresentationType = .sheet) {
-		guard enabled else { return }
-		disable(duration: .routerTransitionDurationVertical)
+	public nonisolated func present(_ route: Route, type: PresentationType = .sheet) async {
+		await transition(direction: .vertical) {
+			applyPresent(route, type: type)
+		}
+	}
+
+	func applyPresent(_ route: Route, type: PresentationType = .sheet) {
 		let routerPath = HorizontalPath(root: route, presentationType: type)
 		paths.append(routerPath)
+	}
+
+	/// Spawns a Task and runs the async method `dismiss()`.
+	public func dismiss() {
+		Task {
+			await dismiss()
+		}
 	}
 
 	/// Removes the top vertical path.
 	/// Will be animated.
 	/// Does nothing if there is only one path available
 	/// which will be the root path and cannot be dismissed.
-	public func dismiss() {
-		guard enabled else { return }
-		guard paths.count > 1 else { return }
-		disable(duration: .routerTransitionDurationVertical)
-		paths.removeLast()
+	public nonisolated func dismiss() async {
+		await transition(direction: .vertical) {
+			applyDismiss()
+		}
 	}
 
-	// MARK: - Consecutive steps
-
-	/**
-	 Executes consecutive transition steps.
-
-	 Provides a possibility to concatinate multiple and different transitions.
-	 In the `steps` closure multiple and different router calls can be executed.
-
-	 However, the transition will not be necessarily animated when there is not
-	 enough time passed between each call.
-	 Therefore, after each transition step the background thread should sleep
-	 before calling the next step.
-
-	 For this the `RouterSleep` can be used and an individual sleep time
-	 chosen depending on which previous step has been executed.
-
-	 For example, to execute a pop and then a present and then a push:
-
-	 ```
-	 router.consecutiveSteps { router in
-	   router.pop()
-	   await RouterSleep.horizontal.sleep()
-	   router.present(.route1)
-	   await RouterSleep.vertical.sleep()
-	   router.push(.route2)
-	 }
-	 ```
-
-	 - warning: Keep in mind that it' i's not thread safe and not user-safe to execute
-	 multiple transition steps.
-	 While waiting for a transition being executed the user might interact with the app
-	 which can cause unexpected side-effects when happening during the transaction sequence.
-	 The app might also transition to screens via gestures which the router can't catch in advance.
-	 Therefore, only use this method with caution.
-	 */
-	public nonisolated func consecutiveSteps(_ steps: @escaping @MainActor @Sendable (Router) async -> Void) {
-		Task {
-			await steps(self)
-		}
+	func applyDismiss() {
+		guard numberOfPresentedViews > 1 else { return }
+		paths.removeLast()
 	}
 
 	// MARK: - Binding
@@ -223,7 +292,7 @@ public class Router: ObservableObject, Sendable {
 						// Will be triggered when the user dismisses a sheet manually
 						// by dragging it down in which case we have to update
 						// the router stack manually to be in sync with the view hierarchy.
-						router?.dismissAfter(index: index - 1)
+						router?.applyDismissAfter(index: index - 1)
 					}
 				)
 			},
@@ -239,7 +308,7 @@ public class Router: ObservableObject, Sendable {
 	/// but to update the state to be in sync.
 	/// Does nothing if the index is higher than the amount of routes in the list
 	/// or when negative.
-	private func dismissAfter(index: Int) {
+	private func applyDismissAfter(index: Int) {
 		let amountToRemove = paths.count - 1 - index
 		guard paths.count > amountToRemove, amountToRemove > 0 else {
 			return

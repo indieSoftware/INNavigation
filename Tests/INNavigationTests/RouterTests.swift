@@ -7,7 +7,7 @@ final class RouterTests: XCTestCase {
 	// MARK: - Init
 
 	func testInitProvidesRoot() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
 		let result = sut.paths
 
@@ -20,25 +20,41 @@ final class RouterTests: XCTestCase {
 	// MARK: - NumberOfPushedViews
 
 	func testNumberOfPushedViewsOnEmptyPath() {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 		let result = sut.numberOfPushedViews
 		XCTAssertEqual(result, 0)
 	}
 
 	func testNumberOfPushedViewsOnExistingPath() {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
 		let result = sut.numberOfPushedViews
 		XCTAssertEqual(result, 2)
+	}
+
+	// MARK: - NumberOfPresentedViews
+
+	func testNumberOfPresentedViewsOnSinglePath() {
+		let sut = Router(root: .testRoute1)
+		let result = sut.numberOfPresentedViews
+		XCTAssertEqual(result, 1)
+	}
+
+	func testNumberOfPresentedViewsOnMultiplePaths() {
+		let sut = Router(root: .testRoute1)
+		sut.applyPresent(.testRoute2)
+		sut.applyPresent(.testRoute3)
+		let result = sut.numberOfPresentedViews
+		XCTAssertEqual(result, 3)
 	}
 
 	// MARK: - Set
 
 	func testSetWithOnePath() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.set(routes: .testRoute2)
+		sut.applySet(routes: [Route.testRoute2])
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -48,9 +64,9 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testSetWithMultiplePaths() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.set(routes: .testRoute2, .testRoute1, .testRoute2)
+		sut.applySet(routes: [Route.testRoute2, .testRoute1, .testRoute2])
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -62,9 +78,9 @@ final class RouterTests: XCTestCase {
 	// MARK: - Push
 
 	func testPush() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.push(.testRoute3)
+		sut.applyPush(.testRoute3)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -74,11 +90,11 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testMultiplePushs() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.push(.testRoute2)
-		sut.push(.testRoute2)
-		sut.push(.testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute1)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -90,9 +106,9 @@ final class RouterTests: XCTestCase {
 	// MARK: - Pop
 
 	func testPopOnEmptyPath() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.pop()
+		sut.applyPop()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -102,10 +118,10 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopAfterAPush() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
 
-		sut.pop()
+		sut.applyPop()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -115,11 +131,11 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopAfterMultiplePushes() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
 
-		sut.pop()
+		sut.applyPop()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -131,9 +147,9 @@ final class RouterTests: XCTestCase {
 	// MARK: - PopToRoot
 
 	func testPopToRootOnEmptyPath() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.popToRoot()
+		sut.applyPopToRoot()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -143,10 +159,10 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopToRootAfterAPush() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
 
-		sut.popToRoot()
+		sut.applyPopToRoot()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -156,12 +172,12 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopToRootAfterMultiplePushes() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
-		sut.push(.testRoute1)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
+		sut.applyPush(.testRoute1)
 
-		sut.popToRoot()
+		sut.applyPopToRoot()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -173,9 +189,9 @@ final class RouterTests: XCTestCase {
 	// MARK: - PopAfterIndex
 
 	func testPopAfterNonNullIndexOnEmptyPath() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.popAfter(index: 2)
+		sut.applyPopAfter(index: 2)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -185,11 +201,11 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopAfterNegativeIndex() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
 
-		sut.popAfter(index: -1)
+		sut.applyPopAfter(index: -1)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -199,27 +215,27 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopAfterIndexMatchingPathCountMinusOne() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
 
-		sut.popAfter(index: 1)
+		sut.applyPopAfter(index: 1)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
 		let path = try XCTUnwrap(result.first)
 		XCTAssertEqual(path.root, .testRoute1)
-		XCTAssertEqual(path.routes, [.testRoute2, .testRoute3])
+		XCTAssertEqual(path.routes, [.testRoute2])
 	}
 
 	func testPopAfterIndexWithinPathCount() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
-		sut.push(.testRoute1)
-		sut.push(.testRoute2)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
+		sut.applyPush(.testRoute1)
+		sut.applyPush(.testRoute2)
 
-		sut.popAfter(index: 1)
+		sut.applyPopAfter(index: 2)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -229,26 +245,26 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPopAfterZeroIndex() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
-		sut.push(.testRoute2)
-		sut.push(.testRoute3)
-		sut.push(.testRoute1)
+		let sut = Router(root: .testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPush(.testRoute3)
+		sut.applyPush(.testRoute1)
 
-		sut.popAfter(index: 0)
+		sut.applyPopAfter(index: 0)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
 		let path = try XCTUnwrap(result.first)
 		XCTAssertEqual(path.root, .testRoute1)
-		XCTAssertEqual(path.routes, [.testRoute2])
+		XCTAssertEqual(path.routes, [])
 	}
 
 	// MARK: - Present
 
 	func testPresentWithDefaultType() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.present(.testRoute2)
+		sut.applyPresent(.testRoute2)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 2)
@@ -261,9 +277,9 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPresentWithFullScreenType() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.present(.testRoute2, type: .fullScreen)
+		sut.applyPresent(.testRoute2, type: .fullScreen)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 2)
@@ -276,10 +292,10 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPresentMultipleScreens() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.present(.testRoute2, type: .sheet)
-		sut.present(.testRoute2, type: .fullScreen)
+		sut.applyPresent(.testRoute2, type: .sheet)
+		sut.applyPresent(.testRoute2, type: .fullScreen)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 3)
@@ -295,11 +311,11 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testPresentWithPopsInbetween() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.push(.testRoute2)
-		sut.present(.testRoute2, type: .fullScreen)
-		sut.push(.testRoute3)
+		sut.applyPush(.testRoute2)
+		sut.applyPresent(.testRoute2, type: .fullScreen)
+		sut.applyPush(.testRoute3)
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 2)
@@ -314,9 +330,9 @@ final class RouterTests: XCTestCase {
 	// MARK: - Dismiss
 
 	func testDismissWithoutPresent() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.dismiss()
+		sut.applyDismiss()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -326,10 +342,10 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testDismissAfterPresent() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.present(.testRoute3)
-		sut.dismiss()
+		sut.applyPresent(.testRoute3)
+		sut.applyDismiss()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 1)
@@ -339,11 +355,11 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testDismissAfterMultiplePresents() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 
-		sut.present(.testRoute3)
-		sut.present(.testRoute2)
-		sut.dismiss()
+		sut.applyPresent(.testRoute3)
+		sut.applyPresent(.testRoute2)
+		sut.applyDismiss()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 2)
@@ -356,41 +372,15 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testDismissAfterMultiplePresentsWithPushes() throws {
-		let sut = Router<TestRoute>(root: .testRoute3)
+		let sut = Router(root: .testRoute3)
 
-		sut.push(.testRoute2)
-		sut.present(.testRoute3, type: .fullScreen)
-		sut.push(.testRoute1)
-		sut.push(.testRoute2)
-		sut.present(.testRoute2, type: .fullScreen)
-		sut.push(.testRoute3)
-		sut.dismiss()
-
-		let result = sut.paths
-		XCTAssertEqual(result.count, 2)
-		XCTAssertEqual(result[0].presentationType, .fullScreen)
-		XCTAssertEqual(result[0].root, .testRoute3)
-		XCTAssertEqual(result[0].routes, [.testRoute2])
-		XCTAssertEqual(result[1].presentationType, .fullScreen)
-		XCTAssertEqual(result[1].root, .testRoute3)
-		XCTAssertEqual(result[1].routes, [.testRoute1, .testRoute2])
-	}
-
-	// MARK: - ConsecutiveSteps
-
-	func testConsecutiveSteps() throws {
-		let sut = Router<TestRoute>(root: .testRoute3)
-
-		let closuerExpectation = expectation(description: "closuerExpectation")
-		sut.consecutiveSteps { router in
-			router.push(.testRoute2)
-			router.present(.testRoute3, type: .fullScreen)
-			router.push(.testRoute1)
-			router.push(.testRoute2)
-			closuerExpectation.fulfill()
-		}
-
-		waitForExpectations(timeout: 1.0)
+		sut.applyPush(.testRoute2)
+		sut.applyPresent(.testRoute3, type: .fullScreen)
+		sut.applyPush(.testRoute1)
+		sut.applyPush(.testRoute2)
+		sut.applyPresent(.testRoute2, type: .fullScreen)
+		sut.applyPush(.testRoute3)
+		sut.applyDismiss()
 
 		let result = sut.paths
 		XCTAssertEqual(result.count, 2)
@@ -405,23 +395,23 @@ final class RouterTests: XCTestCase {
 	// MARK: - Binding
 
 	func testBindingHasNoRetainCycle() throws {
-		var sut: Router<TestRoute>? = Router<TestRoute>(root: .testRoute1)
+		var sut: Router? = Router(root: .testRoute1)
 		XCTAssertNotNil(sut)
 		let binding = try XCTUnwrap(sut?.verticalBinding(index: 1))
 
-		let info = binding.wrappedValue // This can cause a retain cycle
+		let info = binding.wrappedValue // Test that this is not causing a retain cycle
 		XCTAssertNil(info)
 
-		weak var weakSut: Router<TestRoute>? = sut
+		weak var weakSut: Router? = sut
 		sut = nil
 
 		XCTAssertNil(weakSut)
 	}
 
 	func testBindingReturnsActiveInfo() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 		let binding = sut.verticalBinding(index: 1)
-		sut.paths.append(HorizontalPath<TestRoute>(root: .testRoute2, presentationType: .fullScreen))
+		sut.paths.append(HorizontalPath(root: .testRoute2, presentationType: .fullScreen))
 
 		let result = try XCTUnwrap(binding.wrappedValue)
 
@@ -430,7 +420,7 @@ final class RouterTests: XCTestCase {
 	}
 
 	func testBindingReturnsNilForNotMatchingIndex() throws {
-		let sut = Router<TestRoute>(root: .testRoute1)
+		let sut = Router(root: .testRoute1)
 		let binding = sut.verticalBinding(index: 1)
 
 		let result = binding.wrappedValue

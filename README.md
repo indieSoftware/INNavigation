@@ -114,9 +114,9 @@ It's also possible to create own custom multi-step navigations. For this the rou
 ```
 router.consecutiveSteps { router in
 	router.pop()
-	await RouterSleep.horizontal.sleep()
+	await RoutingDirection.horizontal.sleep()
 	router.present(.exampleView(title: "Presented"))
-	await RouterSleep.vertical.sleep()
+	await RoutingDirection.vertical.sleep()
 	router.push(.exampleView(title: "Pushed"))
 }
 ```

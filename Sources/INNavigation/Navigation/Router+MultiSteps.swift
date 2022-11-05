@@ -1,37 +1,29 @@
 public extension Router {
 	/// Performs multiple pop calls and waits between each step to have them animated.
-	func multiPopToRoot() async {
-		guard !paths.isEmpty else { return }
-
-		let lastIndex = paths.count - 1
-		let numberOfPaths = paths[lastIndex].routes.count
-		guard numberOfPaths > 0 else {
-			return
+	func multiPopToRoot() {
+		Task {
+			await multiPopToRoot()
 		}
+	}
 
-		for _ in 0 ..< numberOfPaths {
-			pop()
-			await RouterSleep.horizontal.sleep()
+	/// Performs multiple pop calls and waits between each step to have them animated.
+	nonisolated func multiPopToRoot() async {
+		while await numberOfPushedViews > 0 {
+			await pop()
 		}
 	}
 
 	/// Removes all vertical paths one after another animated.
-	func multiDismissToRoot() async {
-		let numberOfPaths = paths.count
-		guard numberOfPaths > 1 else {
-			return
-		}
-
-		for _ in 1 ..< numberOfPaths {
-			dismiss()
-			await RouterSleep.vertical.sleep()
+	func multiDismissToRoot() {
+		Task {
+			await multiDismissToRoot()
 		}
 	}
 
-	/// Dismisses all vertical paths each after another animated and then presents a new route.
-	func dismissToRootAndPresent(_ route: Route, type: PresentationType) async {
-		await multiDismissToRoot()
-		present(route, type: type)
-		await RouterSleep.vertical.sleep()
+	/// Removes all vertical paths one after another animated.
+	nonisolated func multiDismissToRoot() async {
+		while await numberOfPresentedViews > 1 {
+			await dismiss()
+		}
 	}
 }

@@ -28,9 +28,7 @@ struct ExampleView: View {
 					}
 
 					Button {
-						Task {
-							await router.multiPopToRoot()
-						}
+						router.multiPopToRoot()
 					} label: {
 						Text("Multi-pop to root")
 					}
@@ -66,21 +64,17 @@ struct ExampleView: View {
 
 				VStack {
 					Button {
-						router.consecutiveSteps { router in
-							router.pop()
-							await RouterSleep.horizontal.sleep()
-							router.present(.exampleView(title: "Presented"))
-							await RouterSleep.vertical.sleep()
-							router.push(.exampleView(title: "Pushed"))
+						Task {
+							await router.pop()
+							await router.present(.exampleView(title: "Presented"))
+							await router.push(.exampleView(title: "Pushed"))
 						}
 					} label: {
 						Text("Pop, present, push")
 					}
 
 					Button {
-						Task {
-							await router.dismissToRootAndPresent(.exampleView(title: "Complex presented"), type: .sheet)
-						}
+						router.dismissToRootAndPresent(.exampleView(title: "Complex presented"), type: .sheet)
 					} label: {
 						Text("Dismiss to root and present")
 					}

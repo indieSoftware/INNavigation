@@ -1,14 +1,18 @@
 import INCommons
 
-/// The different times to wait for a transition animation
-/// before the next step can be safely executed.
-public enum RouterSleep {
+/// The different routing directions.
+public enum RoutingDirection: Sendable {
 	/// A horizontal step (push/pop).
 	case horizontal
 	/// A vertical step (present/dismiss).
 	case vertical
+	/// A non-specific direction which doesn't take any time (direct set).
+	case nonspecific
 
 	/// Sleeps for the appropriate time for the corresponding step.
+	/// This ensures that a thread is waiting for a transition animation has been ended
+	/// before the next one can be applied.
+	/// If the time is not respected correctly then this can lead to screen discrepancies.
 	public func sleep() async {
 		let duration: Double
 		switch self {
@@ -16,6 +20,8 @@ public enum RouterSleep {
 			duration = .routerTransitionDurationHorizontal
 		case .vertical:
 			duration = .routerTransitionDurationVertical
+		case .nonspecific:
+			return
 		}
 		try? await Task.sleep(seconds: duration)
 	}
