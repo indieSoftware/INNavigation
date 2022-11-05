@@ -11,33 +11,85 @@ With horizontal navigation a push/pop navigation is meant, originally provided b
 
 A vertical navigation is realized with present/dismiss actions to show or dismiss sheets. Each vertical navigation automatically introduces a new layer for a horizontal navigation.
 
+In addition to the routing management the routing system also supports custom navigation bars which stay on screen simulating a static navigation bar which, however, can change for each screen.
+
 ## Usage
 
-### Route
+### Route and Screen
 
-First a collection of possible routes has to be created. This can be achieved by introducing an enum which implemnets the `Route` protocol.
+First, next to each view definition, a screen must be defined which represents that view and acts as a factory for that view. For that a struct has to be defined which implements the `Screen` protocol.
+
+It's not necessary, but recommended to place the screen definition in a `Route` extension. That eases the access later.
 
 ```
-import INNavigation
-import SwiftUI
-
-enum ExampleRoute: Route {
-	case exampleView(title: String)
-
-	var view: some View {
-		switch self {
-		case let .exampleView(title):
-			return ExampleView(title: title)
-		}
+extension Route {
+	struct View1Screen: Screen {
+		let id: String = UUID().uuidString
+		var contentView: AnyView { AnyView(View1()) }
+		func navigationBar(namespaceId: Namespace.ID) -> AnyView? { 
+			AnyView(View1NavBar(navBarNamespace: namespaceId))
+		 }
 	}
+
+	static var view1: Route { Route(View1Screen()) }
 }
 ```
 
-Here the `ExampleRoute` is defined with only one single route named `exampleView`. That means only one screen is defined, but more can be defined here.
+In the above example the `View1Screen` represents the content view `View1`. The `navigationBar` method creates the custom navigation bar and the static computed property `view1` provides a computed property to return a `Route` for that screen.
 
-The enum case has one associated value `title`. This is to show-case how to pass parameters to screens.
+It's also possible to pass any parameters to the view during initialization. Simply add some properties to the struct and use a static function instead of a static property for the route creation.
 
-In the computed `view` property the concrete view is returned. Usually a view model might be also instantiated here which takes the `title` as the parameter instead.
+```
+extension Route {
+	struct ExampleViewScreen: Screen {
+		let id: String = UUID().uuidString
+		let title: String
+		var contentView: AnyView { AnyView(ExampleView(title: title)) }
+		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
+		var hideSystemNavigationBar: Bool { false }
+	}
+
+	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
+}
+```
+
+If a view should use the system's navigation bar instead of a custom one then simply pass `nil` as the `navigationBar` result.
+
+The custom navigation bar as well as the content view are plain views, just embedded into `AnyView`s to pass them around.
+
+However, for a custom navigation bar it might be interesting to inject the router reference via an `EnvironmentObject`. That can then be used to navigatie via custom buttons in the navigation bar.
+
+The router uses a `Namespace` for animating the custom navigation bar. This namespace is passed to the screen's factory method so that it can pass it to the custom navigation bar view. The view can then use the namespace with `matchedGeometryEffect` modifiers to animate sub-views over different navigation bar views. This helps animating sub-views during transitioning the screens.
+
+```
+struct View1NavBar: View {
+	@EnvironmentObject var router: Router
+	let navBarNamespace: Namespace.ID
+
+	var body: some View {
+		ZStack {
+			Color.green
+				.matchedGeometryEffect(id: "background", in: navBarNamespace)
+				.opacity(0.3)
+
+			HStack {
+				Button {
+					router.pop()
+				} label: {
+					Image(systemName: "chevron.left")
+						.matchedGeometryEffect(id: "leftButtonIcon", in: navBarNamespace)
+						.frame(width: 45, height: 45)
+				}
+				Spacer()
+			}
+
+			Text("View 1 Title")
+				.matchedGeometryEffect(id: "title", in: navBarNamespace)
+		}
+		.frame(height: 50)
+	}
+}
+```
 
 ### RouterView
 
@@ -51,8 +103,8 @@ import SwiftUI
 struct NavigationTestApp: App {
 	var body: some Scene {
 		WindowGroup {
-			RouterView<ExampleRoute>()
-				.environmentObject(Router<ExampleRoute>(root: .exampleView(title: "Root")))
+			RouterView()
+				.environmentObject(Router(root: .exampleView(title: "Root")))
 		}
 	}
 }
@@ -94,32 +146,17 @@ router.present(.exampleView(title: "Presented full-screen"), type: .fullScreen)
 router.dismiss()
 ```
 
-### Multi-step navigation
+### Transition animations
 
-It's also possible to use multiple navigation steps. Some are already provided, however, they have to be executed asynchonously because the thread has to sleep in-between of the navigation steps. This is necessary to wait for the navigation animation to finish otherwise the animation will not be visible.
+SwiftUI's navigation doesn't provide a callback functionality to get informed when the transition animation has finished. 
+
+As a workaround the `Router` will wait for an estimated time on a background thread. That allows to have async methods for `push`, `pop`, etc. which will last for as long as the corresponding transition takes. This also allows to concatenate multiple navigation steps, i.e. to first pop the top screen and then after the animation to push a different one.
 
 ```
 Task {
-	await router.multiPopToRoot()
-}
-```
-```
-Task {
-	await router.multiDismissToRoot()
+	await router.pop()
+	await router.push(.view2)
 }
 ```
 
-It's also possible to create own custom multi-step navigations. For this the router's `consecutiveSteps` method can be used, i.e.:
-
-```
-router.consecutiveSteps { router in
-	router.pop()
-	await RoutingDirection.horizontal.sleep()
-	router.present(.exampleView(title: "Presented"))
-	await RoutingDirection.vertical.sleep()
-	router.push(.exampleView(title: "Pushed"))
-}
-```
-
-Just keep in mind to sleep between each step and be aware that different navigation transitions need a minimal delay time for the animation. So, after a horizontal navigation like push or pop a horizontal sleep time should be waited for. For vertical navigations like present and dismiss the vertical sleep time should be used accordingly.
-
+SwiftUI automatically blocks all interactions in a transitioning content view. However, the custom navigation bar is a view outside of the NavigationStack and thus is uneffected by that block. To prevent any routing during such a transition which might break the view hierarchy, the router automatically disables itself during a transition animation.
