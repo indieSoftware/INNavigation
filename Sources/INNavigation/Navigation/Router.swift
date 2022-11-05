@@ -1,4 +1,5 @@
 import Combine
+import INCommons
 import SwiftUI
 
 /// The router which provides a functional interface for the navigation between screens.
@@ -24,6 +25,9 @@ public class Router: ObservableObject, Sendable {
 	/// The horizontal paths hold as a private property.
 	@Published private var horizontalPaths: [HorizontalPath]
 
+	/// Only when true then the router will accept new transition calls, ignoring any when false.
+	private var enabled: Bool = true
+
 	/// Returns the number of routes in the current horizontal path stack.
 	/// 0 means there are no views pushed on top of the root.
 	public var numberOfPushedViews: Int {
@@ -42,48 +46,82 @@ public class Router: ObservableObject, Sendable {
 		_horizontalPaths = Published(initialValue: [HorizontalPath(root: root, presentationType: .fullScreen)])
 	}
 
+	/// Disables the router for a duration.
+	///
+	/// This method is a workaround for not having the possibility to get called back when
+	/// the `NavigationStack` or `sheet` transition animation has finished.
+	///
+	/// - parameter duration: The amount of time in seconds the router should be disabled.
+	/// Usually `.routerTransitionDurationHorizontal` or
+	/// `.routerTransitionDurationVertical` should be passed.
+	public func disable(duration: Double) {
+		enabled = false
+		Task {
+			try? await Task.sleep(seconds: duration)
+			enabled = true
+		}
+	}
+
 	// MARK: - Navigation
 
 	/// Sets multiple routes at once replacing the current path.
+	///
 	/// Will be animated only when one screen has been added or removed
 	/// relative to the old state.
+	/// Does not block the router, therefore, when using this method consider
+	/// also to call `disable(duration: .routerTransitionDurationHorizontal)`.
+	///
 	/// - parameter routes: The routes which replaces the current path.
 	/// Might also be empty.
 	public func set(routes: Route...) {
+		guard enabled else { return }
 		paths[lastIndex].routes = routes
 	}
 
 	/// Adds a new view to the horizontal path.
-	/// Will be animated.
+	///
+	/// Will be animated and blocks the router for that time.
+	///
 	/// - parameter route: The view representing route to push onto the navigation stack.
 	public func push(_ route: Route) {
+		guard enabled else { return }
+		disable(duration: .routerTransitionDurationHorizontal)
 		paths[lastIndex].routes.append(route)
 	}
 
 	/// Removes the last view in the current horizontal path.
-	/// Will be animated.
+	///
+	/// Will be animated and blocks the router for that time.
 	/// Does nothing if there are no views pushed.
 	public func pop() {
-		guard !paths[lastIndex].routes.isEmpty else {
-			return
-		}
+		guard enabled else { return }
+		guard !paths[lastIndex].routes.isEmpty else { return }
+
+		disable(duration: .routerTransitionDurationHorizontal)
 		paths[lastIndex].routes.removeLast()
 	}
 
 	/// Removes all views from the current horizontal path.
-	/// This will not be animated.
+	/// This will not be animated and does not block the router.
 	public func popToRoot() {
+		guard enabled else { return }
 		paths[lastIndex].routes.removeAll()
 	}
 
 	/// Removes all views from the current horizontal path after the given index.
+	///
 	/// Does nothing if the index is higher than the amount of routes in the list
 	/// or when negative.
+	///
 	/// Will be animated only if exactly one view has been popped.
+	/// Does not block the router, therefore, when using this method consider
+	/// also to call `disable(duration: .routerTransitionDurationHorizontal)`.
+	///
 	/// - parameter index: The index of the route from which all following routes will be removed.
 	/// The index is 0 based while 0 indicates the first pushed screen.
 	/// When also the first pushed screen should be popped, then use `popToRoot` instead.
 	public func popAfter(index: Int) {
+		guard enabled else { return }
 		let amountToRemove = paths[lastIndex].routes.count - 1 - index
 		guard paths[lastIndex].routes.count > amountToRemove, amountToRemove > 0 else {
 			return
@@ -91,13 +129,15 @@ public class Router: ObservableObject, Sendable {
 		paths[lastIndex].routes.removeLast(amountToRemove)
 	}
 
-	/**
-	 Adds a new view to the vertical path which will be the root for the new horizontal path.
-	 Will be animated.
-	 - parameter route: The view representing route.
-	 - parameter type: The type of vertical presentation, e.g. as a sheet or full-screen covering modal view.
-	 */
+	/// Adds a new view to the vertical path which will be the root for the new horizontal path.
+	///
+	/// Will be animated and blocks the router for that time.
+	///
+	/// - parameter route: The view representing route.
+	/// - parameter type: The type of vertical presentation, e.g. as a sheet or full-screen covering modal view.
 	public func present(_ route: Route, type: PresentationType = .sheet) {
+		guard enabled else { return }
+		disable(duration: .routerTransitionDurationVertical)
 		let routerPath = HorizontalPath(root: route, presentationType: type)
 		paths.append(routerPath)
 	}
@@ -107,9 +147,9 @@ public class Router: ObservableObject, Sendable {
 	/// Does nothing if there is only one path available
 	/// which will be the root path and cannot be dismissed.
 	public func dismiss() {
-		guard paths.count > 1 else {
-			return
-		}
+		guard enabled else { return }
+		guard paths.count > 1 else { return }
+		disable(duration: .routerTransitionDurationVertical)
 		paths.removeLast()
 	}
 

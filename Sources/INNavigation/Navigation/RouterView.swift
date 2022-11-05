@@ -11,6 +11,9 @@ public struct RouterView: View {
 	/// animation geometry properly during transition.
 	@Namespace private var navigationBarNamespace
 
+	/// A constant used as the geometry effect key for the navigation bar root view.
+	private let navigationBarGeometryEffectRootKey = "navigationBarGeometryEffectRootKey"
+
 	/// The vertical index of this path.
 	/// Zero means this is the root path and any number above represents the number
 	/// of modal views this view is on top of the root path.
@@ -72,7 +75,7 @@ public struct RouterView: View {
 						)
 						// Match each custom nav bar with the next one so that even
 						// custom nav bars which are not using the namespace animate somehow.
-						.matchedGeometryEffect(id: "navigationBar", in: navigationBarNamespace)
+						.matchedGeometryEffect(id: navigationBarGeometryEffectRootKey, in: navigationBarNamespace)
 						// Mark each custom nav bar as an individual one for SwiftUI,
 						// necessary for the geometry effect to distinct the custom nav bars.
 						.id(lastRoute)

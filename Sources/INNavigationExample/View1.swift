@@ -36,6 +36,7 @@ struct View1: View {
 }
 
 struct View1NavBar: View {
+	@EnvironmentObject var router: Router
 	let navBarNamespace: Namespace.ID
 
 	var body: some View {
@@ -43,6 +44,22 @@ struct View1NavBar: View {
 			Color.green
 				.matchedGeometryEffect(id: "background", in: navBarNamespace)
 				.opacity(0.3)
+
+			HStack {
+				Button {
+					router.pop()
+				} label: {
+					Image(systemName: "chevron.left")
+						.matchedGeometryEffect(id: "leftButtonIcon", in: navBarNamespace)
+						.frame(width: 45, height: 45)
+						.background(
+							Color.blue.opacity(0.1)
+								.matchedGeometryEffect(id: "leftButton", in: navBarNamespace)
+						)
+				}
+				Spacer()
+			}
+
 			Text("View 1 Title")
 				.matchedGeometryEffect(id: "title", in: navBarNamespace)
 		}
