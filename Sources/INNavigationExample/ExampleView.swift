@@ -125,7 +125,6 @@ extension Route {
 		let title: String
 		var contentView: AnyView { AnyView(ExampleView(title: title)) }
 		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
-		var hideSystemNavigationBar: Bool { false }
 	}
 
 	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
