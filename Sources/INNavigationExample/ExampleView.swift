@@ -96,6 +96,32 @@ struct ExampleView: View {
 					} label: {
 						Text("Pop all after index 1")
 					}
+
+					Button {
+						Task {
+							await router.push(.view1)
+							await router.push(.view2)
+							await router.push(.view1)
+							await router.pop()
+							await router.pop()
+							await router.pop()
+						}
+					} label: {
+						Text("Test horizontal navigation animation")
+					}
+
+					Button {
+						Task {
+							await router.present(.view1)
+							await router.present(.view2)
+							await router.present(.view1)
+							await router.dismiss()
+							await router.dismiss()
+							await router.dismiss()
+						}
+					} label: {
+						Text("Test vertical navigation animation")
+					}
 				}
 
 				VStack {
