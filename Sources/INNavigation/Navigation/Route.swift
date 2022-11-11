@@ -14,12 +14,14 @@ public struct Route: Sendable {
 	}
 }
 
+/// Necessary for passing to `NavigationStack`, etc.
 extension Route: Hashable {
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(screen.id)
 	}
 }
 
+/// Necessary for passing to `NavigationStack`, etc.
 extension Route: Equatable {
 	public static func == (lhs: Route, rhs: Route) -> Bool {
 		lhs.screen.id == rhs.screen.id
@@ -28,6 +30,7 @@ extension Route: Equatable {
 
 // MARK: - CustomStringConvertible
 
+/// Only for debugging.
 extension Route: CustomStringConvertible {
 	public var description: String {
 		"\(screen.id)"

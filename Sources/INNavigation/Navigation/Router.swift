@@ -172,7 +172,7 @@ public class Router: ObservableObject, Sendable {
 		let willBeAnimated = await MainActor.run {
 			numberOfPushedViews == 1
 		}
-		await transition(direction: willBeAnimated ? .horizontal : .nonspecific) {
+		await transition(direction: willBeAnimated ? .horizontal : .none) {
 			applyPopToRoot()
 		}
 	}
@@ -202,7 +202,7 @@ public class Router: ObservableObject, Sendable {
 		let willBeAnimated = await MainActor.run {
 			numberOfPushedViews - index == 1
 		}
-		await transition(direction: willBeAnimated ? .horizontal : .nonspecific) {
+		await transition(direction: willBeAnimated ? .horizontal : .none) {
 			applyPopAfter(index: index)
 		}
 	}

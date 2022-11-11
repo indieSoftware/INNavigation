@@ -7,7 +7,9 @@ public enum RoutingDirection: Sendable {
 	/// A vertical step (present/dismiss).
 	case vertical
 	/// A non-specific direction which doesn't take any time (direct set).
-	case nonspecific
+	case none
+	/// A custom value for passing a sleep duration in seconds.
+	case custom(_ duration: Double)
 
 	/// Sleeps for the appropriate time for the corresponding step.
 	/// This ensures that a thread is waiting for a transition animation has been ended
@@ -20,8 +22,11 @@ public enum RoutingDirection: Sendable {
 			duration = .routerTransitionDurationHorizontal
 		case .vertical:
 			duration = .routerTransitionDurationVertical
-		case .nonspecific:
+		case .none:
 			return
+		case let .custom(customDuration):
+			precondition(customDuration >= 0)
+			duration = customDuration
 		}
 		try? await Task.sleep(seconds: duration)
 	}
@@ -33,6 +38,8 @@ public enum RoutingDirection: Sendable {
 	}
 }
 
+/// These values are best guesses and might change any time with an iOS update.
+/// They are used as a workaround for the lack of a callback after a transition animation has finished.
 public extension Double {
 	/// The time of a horizontal transition (push/pop).
 	static let routerTransitionDurationHorizontal: Double = 0.55
