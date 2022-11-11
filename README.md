@@ -57,7 +57,7 @@ If a view should use the system's navigation bar instead of a custom one then si
 
 The custom navigation bar as well as the content view are plain views, just embedded into `AnyView`s to pass them around.
 
-However, for a custom navigation bar it might be interesting to inject the router reference via an `EnvironmentObject`. That can then be used to navigatie via custom buttons in the navigation bar.
+However, for a custom navigation bar it might be interesting to inject the router reference via an `EnvironmentObject`. That can then be used to navigate via custom buttons in the navigation bar.
 
 The router uses a `Namespace` for animating the custom navigation bar. This namespace is passed to the screen's factory method so that it can pass it to the custom navigation bar view. The view can then use the namespace with `matchedGeometryEffect` modifiers to animate sub-views over different navigation bar views. This helps animating sub-views during transitioning the screens.
 
