@@ -3,7 +3,7 @@ import SwiftUI
 /// Defines a screen representable for a navigation route.
 public protocol Screen: Sendable {
 	/// A unique identifier to distinct this screen from another.
-	/// Usually `UUID().uuidString` is enought to be returned.
+	/// Usually `UUID().uuidString` is enough to be returned.
 	var id: String { get }
 
 	/// Returns the screen's content view wrapped by an `AnyView`.
