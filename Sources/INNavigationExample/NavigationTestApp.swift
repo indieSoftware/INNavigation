@@ -7,6 +7,9 @@ struct NavigationTestApp: App {
 		WindowGroup {
 			RouterView()
 				.environmentObject(Router(root: .exampleView(title: "Root")))
+
+			// Replace the RouterView with a problem view from below
+			// Problem1View()
 		}
 	}
 }
