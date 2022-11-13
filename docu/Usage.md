@@ -145,3 +145,5 @@ Task {
 ```
 
 SwiftUI automatically blocks all interactions in a transitioning content view. However, the custom navigation bar is a view outside of the NavigationStack and thus is uneffected by that block. To prevent any routing during such a transition which might break the view hierarchy, the router automatically disables itself during a transition animation.
+
+Keep in mind that the delay for waiting for the animation is time based. Therefore, when enabling "Slow Animations" in the simulator then the animation will take longer than the delay and when interacting with the router after the delay, but before the slow animation has finished then this might break the routing system and the display of the view.
