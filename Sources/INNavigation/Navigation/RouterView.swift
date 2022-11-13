@@ -34,6 +34,10 @@ public struct RouterView: View {
 	}
 
 	public var body: some View {
+		// The custom navigation bar is shown on top of the content view.
+		// Using the safeAreaInset would be better, but as of iOS 16.1 (Swift 5.7.1)
+		// this approach doesn't work when embedding the content inside of a NavigationStack.
+		// See also Problem1View show-casing this problem.
 		ZStack {
 			// Only show something if the path is valid.
 			if index < router.paths.count, let path = $router.paths[index] {
