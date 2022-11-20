@@ -2,9 +2,17 @@ import SwiftUI
 
 /// The root view which wrapps a `NavigationStack` and a vertical navigation modifier
 /// to make it possible to navigate horizontally and vertically from this.
-public struct RouterView<RouterType: Route>: View {
+public struct RouterView: View {
 	/// The router which provides the paths for the navigation stack.
-	@EnvironmentObject private var router: Router<RouterType>
+	@EnvironmentObject private var router: Router
+
+	/// The namespace for the custom nav bar's geometry effect.
+	/// Passed to the nav bar so that sub-views can sync their
+	/// animation geometry properly during transition.
+	@Namespace private var navigationBarNamespace
+
+	/// A constant used as the geometry effect key for the navigation bar root view.
+	private let navigationBarGeometryEffectRootKey = "navigationBarGeometryEffectRootKey"
 
 	/// The vertical index of this path.
 	/// Zero means this is the root path and any number above represents the number
@@ -26,19 +34,67 @@ public struct RouterView<RouterType: Route>: View {
 	}
 
 	public var body: some View {
-		if index < router.paths.count {
-			NavigationStack(path: $router.paths[index].routes) {
-				router.paths[index].root.view
-					// Add horizontal navigation possibility.
-					.navigationDestination(for: RouterType.self) { route in
-						route.view
-							.environmentObject(router)
+		// The custom navigation bar is shown on top of the content view.
+		// Using the safeAreaInset would be better, but as of iOS 16.1 (Swift 5.7.1)
+		// this approach doesn't work when embedding the content inside of a NavigationStack.
+		// See also Problem1View show-casing this problem.
+		ZStack {
+			// Only show something if the path is valid.
+			if index < router.paths.count, let path = $router.paths[index] {
+				// Embed the content view in a navigation stack.
+				NavigationStack(path: path.routes) {
+					let rootRoute = path.wrappedValue.root
+					// The content view.
+					rootRoute.screen.contentView
+						// Show or hide the system nav bar for the root screen.
+						.navigationBarHidden(rootRoute.screen.navigationBar(namespaceId: navigationBarNamespace) != nil)
+						// Add horizontal navigation possibility.
+						.navigationDestination(for: Route.self) { route in
+							let screen = route.screen
+							screen.contentView
+								// Show or hide the system nav bar depending of the current screen.
+								.navigationBarHidden(screen.navigationBar(namespaceId: navigationBarNamespace) != nil)
+								// Inject the router dependency to the view hierarchy.
+								.environmentObject(router)
+						}
+						// Add vertical navigation possibility.
+						// The binding is responsible to show or hide the next vertical path.
+						.verticalNavigation(binding: router.verticalBinding(index: index + 1))
+						// Inject the router dependency to the view hierarchy.
+						.environmentObject(router)
+				}
+
+				// Add the nav bar over the content view.
+				VStack(spacing: .zero) {
+					// Get the current visible route representation.
+					let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
+					// Wrap the nav bar in an additional stack which
+					// helps animating the clipping bounds.
+					VStack(spacing: .zero) {
+						// Create the custom nav bar with the namespace passed so that each
+						// nav bar can match the animation for sub-views.
+						(
+							lastRoute.screen.navigationBar(namespaceId: navigationBarNamespace)
+								?? AnyView(Color.clear.frame(height: .zero))
+						)
+						// Match each custom nav bar with the next one so that even
+						// custom nav bars which are not using the namespace animate somehow.
+						.matchedGeometryEffect(id: navigationBarGeometryEffectRootKey, in: navigationBarNamespace)
+						// Mark each custom nav bar as an individual one for SwiftUI,
+						// necessary for the geometry effect to distinct the custom nav bars.
+						.id(lastRoute)
 					}
-					// Add vertical navigation possibility.
-					// The binding is responsible to show or hide the next vertical path.
-					.verticalNavigation(for: RouterType.self, binding: router.verticalBinding(index: index + 1))
-					// Inject the router dependency to the view hierarchy.
-					.environmentObject(router)
+					// Clip the frame of the nav bar during transition, which is kind of
+					// important for transitions from the system nav bar to the custom nav bar.
+					.clipped()
+					// Animate the nav bar transition at all during the screen transition.
+					.animation(.easeOut, value: lastRoute)
+
+					// Push the nav bar at the top of the screen.
+					Spacer()
+				}
+				// Inject the router dependency to the navigation bar.
+				.environmentObject(router)
 			}
 		}
 	}

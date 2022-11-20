@@ -3,8 +3,7 @@ import SwiftUI
 extension View {
 	/// Adds support for a vertical navigation to a view with a router.
 	/// This addes `sheet` and `fullScreenCover` modifier to the view handled by a router binding.
-	func verticalNavigation<RouterType: Route>(
-		for _: RouterType.Type,
+	func verticalNavigation(
 		binding: Binding<PresentationInfo?>
 	) -> some View {
 		fullScreenCover(
@@ -18,7 +17,7 @@ extension View {
 			),
 			onDismiss: binding.wrappedValue?.onDismiss,
 			content: { presentationItem in
-				RouterView<RouterType>(index: presentationItem.index)
+				RouterView(index: presentationItem.index)
 			}
 		)
 		.sheet(
@@ -32,7 +31,7 @@ extension View {
 			),
 			onDismiss: binding.wrappedValue?.onDismiss,
 			content: { presentationItem in
-				RouterView<RouterType>(index: presentationItem.index)
+				RouterView(index: presentationItem.index)
 			}
 		)
 	}

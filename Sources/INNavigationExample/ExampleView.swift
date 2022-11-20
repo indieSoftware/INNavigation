@@ -2,7 +2,7 @@ import INNavigation
 import SwiftUI
 
 struct ExampleView: View {
-	@EnvironmentObject var router: Router<ExampleRoute>
+	@EnvironmentObject var router: Router
 	let title: String
 
 	var body: some View {
@@ -28,9 +28,7 @@ struct ExampleView: View {
 					}
 
 					Button {
-						Task {
-							await router.multiPopToRoot()
-						}
+						router.multiPopToRoot()
 					} label: {
 						Text("Multi-pop to root")
 					}
@@ -66,21 +64,17 @@ struct ExampleView: View {
 
 				VStack {
 					Button {
-						router.consecutiveSteps { router in
-							router.pop()
-							await RouterSleep.horizontal.sleep()
-							router.present(.exampleView(title: "Presented"))
-							await RouterSleep.vertical.sleep()
-							router.push(.exampleView(title: "Pushed"))
+						Task {
+							await router.pop()
+							await router.present(.exampleView(title: "Presented"))
+							await router.push(.exampleView(title: "Pushed"))
 						}
 					} label: {
 						Text("Pop, present, push")
 					}
 
 					Button {
-						Task {
-							await router.dismissToRootAndPresent(.exampleView(title: "Complex presented"), type: .sheet)
-						}
+						router.dismissToRootAndPresent(.exampleView(title: "Complex presented"), type: .sheet)
 					} label: {
 						Text("Dismiss to root and present")
 					}
@@ -102,6 +96,40 @@ struct ExampleView: View {
 					} label: {
 						Text("Pop all after index 1")
 					}
+
+					Button {
+						Task {
+							await router.push(.view1)
+							await router.push(.view2)
+							await router.push(.view1)
+							await router.pop()
+							await router.pop()
+							await router.pop()
+						}
+					} label: {
+						Text("Test horizontal navigation animation")
+					}
+
+					Button {
+						Task {
+							await router.present(.view1)
+							await router.present(.view2)
+							await router.present(.view1)
+							await router.dismiss()
+							await router.dismiss()
+							await router.dismiss()
+						}
+					} label: {
+						Text("Test vertical navigation animation")
+					}
+				}
+
+				VStack {
+					Button {
+						router.push(.view1)
+					} label: {
+						Text("Push View1")
+					}
 				}
 
 				VStack {
@@ -115,4 +143,15 @@ struct ExampleView: View {
 		}
 		.navigationBarTitle(Text(title))
 	}
+}
+
+extension Route {
+	struct ExampleViewScreen: Screen {
+		let id: String = UUID().uuidString
+		let title: String
+		var contentView: AnyView { AnyView(ExampleView(title: title)) }
+		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
+	}
+
+	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
 }

@@ -1,6 +1,0 @@
-
-# INNavigation
-
-## Feature overview
-
-## Installation
