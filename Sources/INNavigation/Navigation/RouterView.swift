@@ -84,9 +84,6 @@ public struct RouterView: View {
 						// necessary for the geometry effect to distinct the custom nav bars.
 						.id(lastRoute)
 					}
-					// Clip the frame of the nav bar during transition, which is kind of
-					// important for transitions from the system nav bar to the custom nav bar.
-					.clipped()
 					// Animate the nav bar transition at all during the screen transition.
 					.animation(.easeOut, value: lastRoute)
 
