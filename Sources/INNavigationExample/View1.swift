@@ -42,6 +42,7 @@ struct View1NavBar: View {
 	var body: some View {
 		ZStack {
 			Color.green
+				.ignoresSafeArea()
 				.matchedGeometryEffect(id: "background", in: navBarNamespace)
 				.opacity(0.3)
 
