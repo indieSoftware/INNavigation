@@ -25,7 +25,7 @@ public class Router: ObservableObject, Sendable {
 	@Published private var horizontalPaths: [HorizontalPath]
     
     /// This is required because sometimes we need to update router view .
-    @Published private var reRenderToggle: Bool = false
+    @Published public var reRenderToggle: Bool = false
 
 	/// A conventient accessor to get the index of the last path in the `paths` list.
 	private var lastIndex: Int {
