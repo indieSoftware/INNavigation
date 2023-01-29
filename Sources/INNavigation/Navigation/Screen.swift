@@ -10,6 +10,10 @@ public protocol Screen: Sendable {
 	@MainActor
 	var contentView: AnyView { get }
 
+    /// Returns the screen's overlay view which disables content view wrapped by an `AnyView?`.
+    @MainActor
+    func overlayView() -> AnyView?
+
 	/// Returns the custom navigation bar wrapped by an `AnyView`.
 	///
 	/// - parameter namespaceId: A namespace which will be provided by the navigation system
