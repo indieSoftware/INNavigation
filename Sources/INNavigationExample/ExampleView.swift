@@ -150,7 +150,6 @@ extension Route {
 		let id: String = UUID().uuidString
 		let title: String
 		var contentView: AnyView { AnyView(ExampleView(title: title)) }
-		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
 	}
 
 	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }

@@ -92,6 +92,10 @@ public struct RouterView: View {
 				}
 				// Inject the router dependency to the navigation bar.
 				.environmentObject(router)
+
+				// Add an overlay view on top of all other content.
+				let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
+				lastRoute.screen.overlayView()
 			}
 		}
 	}
