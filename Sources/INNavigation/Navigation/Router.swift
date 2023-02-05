@@ -23,9 +23,6 @@ public class Router: ObservableObject, Sendable {
 
 	/// The horizontal paths hold as a private property.
 	@Published private var horizontalPaths: [HorizontalPath]
-    
-    /// This is required because sometimes we need to update router view .
-    @Published public var reRenderToggle: Bool = false
 
 	/// A conventient accessor to get the index of the last path in the `paths` list.
 	private var lastIndex: Int {
