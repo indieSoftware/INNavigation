@@ -49,7 +49,6 @@
 		26FCE6FC27D1FAD700C229DA /* INNavigation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FCE6E727D1FAD600C229DA /* INNavigation.framework */; };
 		26FCE6FD27D1FAD700C229DA /* INNavigation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26FCE6E727D1FAD600C229DA /* INNavigation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		41980954330F1CBB38EA8773 /* Pods_INNavigation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81449F7F71630EA9DE31C59A /* Pods_INNavigation.framework */; };
-		537C04362998BE3F005826A8 /* Screen+Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537C04352998BE3F005826A8 /* Screen+Overlay.swift */; };
 		537C04382998BE8B005826A8 /* OverlayExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537C04372998BE8B005826A8 /* OverlayExampleView.swift */; };
 		9A886A5C404411A5FADCA8C6 /* Pods_INNavigationExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB55D7ABEC1132CCF782889E /* Pods_INNavigationExample.framework */; };
 /* End PBXBuildFile section */
@@ -121,7 +120,6 @@
 		26FCE6E927D1FAD600C229DA /* INNavigation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INNavigation.h; sourceTree = "<group>"; };
 		26FCE6F027D1FAD700C229DA /* INNavigationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = INNavigationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FCE70B27D2137300C229DA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		537C04352998BE3F005826A8 /* Screen+Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Screen+Overlay.swift"; sourceTree = "<group>"; };
 		537C04372998BE8B005826A8 /* OverlayExampleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayExampleView.swift; sourceTree = "<group>"; };
 		67BF383CCDD0E96374B9F2A1 /* Pods-INNavigationExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-INNavigationExample.debug.xcconfig"; path = "Target Support Files/Pods-INNavigationExample/Pods-INNavigationExample.debug.xcconfig"; sourceTree = "<group>"; };
 		81449F7F71630EA9DE31C59A /* Pods_INNavigation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_INNavigation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,7 +173,6 @@
 				264708EC28E958EB001CA70C /* Router+MultiSteps.swift */,
 				264708EB28E958EB001CA70C /* RoutingDirection.swift */,
 				26147619290DAD3900C98956 /* Screen.swift */,
-				537C04352998BE3F005826A8 /* Screen+Overlay.swift */,
 				264708EA28E958EB001CA70C /* View+verticalNavigation.swift */,
 			);
 			path = Navigation;
@@ -613,7 +610,6 @@
 				264708F428E958EB001CA70C /* RoutingDirection.swift in Sources */,
 				264708F628E958EB001CA70C /* Router.swift in Sources */,
 				264708F328E958EB001CA70C /* View+verticalNavigation.swift in Sources */,
-				537C04362998BE3F005826A8 /* Screen+Overlay.swift in Sources */,
 				2614761A290DAD3900C98956 /* Screen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
