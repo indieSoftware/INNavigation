@@ -134,6 +134,14 @@ struct ExampleView: View {
 
 				VStack {
 					Button {
+						router.push(.overlayExample(viewModel: OverlayExampleViewModel()))
+					} label: {
+						Text("Push Overlay Example")
+					}
+				}
+
+				VStack {
+					Button {
 						print("Router-paths: \(router.description)")
 					} label: {
 						Text("Print paths")
@@ -150,7 +158,6 @@ extension Route {
 		let id: String = UUID().uuidString
 		let title: String
 		var contentView: AnyView { AnyView(ExampleView(title: title)) }
-		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
 	}
 
 	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
