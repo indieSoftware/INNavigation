@@ -3,6 +3,7 @@ import SwiftUI
 
 struct View2: View {
 	@EnvironmentObject var router: Router
+	@ObservedObject var viewModel: ViewModel2
 
 	var body: some View {
 		ZStack {
@@ -29,6 +30,12 @@ struct View2: View {
 				} label: {
 					Text("Pop")
 				}
+
+				Button(action: {
+					viewModel.showOverlay = true
+				}, label: {
+					Text("Show Overlay")
+				})
 
 				Spacer()
 			}
@@ -74,12 +81,45 @@ struct View2NavBar: View {
 	}
 }
 
+struct OverlayView2: View {
+	@ObservedObject var viewModel: ViewModel2
+
+	var body: some View {
+		if viewModel.showOverlay {
+			ZStack {
+				Color.black
+					.opacity(0.5)
+					.edgesIgnoringSafeArea(.all)
+
+				Button(action: {
+					viewModel.showOverlay = false
+				}, label: {
+					Text("Hide Overlay")
+						.padding(20)
+						.background(Color.white)
+				})
+			}
+		}
+	}
+}
+
+@MainActor
+class ViewModel2: ObservableObject {
+	@Published var showOverlay: Bool = false
+}
+
 extension Route {
+	@MainActor
 	struct View2Screen: Screen {
+		let viewModel: ViewModel2 = .init()
 		let id: String = UUID().uuidString
-		var contentView: AnyView { AnyView(View2()) }
+		var contentView: AnyView { AnyView(View2(viewModel: viewModel)) }
 		func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
+		func overlayView() -> AnyView? {
+			AnyView(OverlayView2(viewModel: viewModel))
+		}
 	}
 
+	@MainActor
 	static var view2: Route { Route(View2Screen()) }
 }

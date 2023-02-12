@@ -10,7 +10,8 @@ public protocol Screen: Sendable {
 	@MainActor
 	var contentView: AnyView { get }
 
-	/// Returns the screen's overlay view which disables content view wrapped by an `AnyView?`.
+	/// Returns a screen's overlay view which will be presented above the content and the navigation bar hiding both.
+	/// When nil is returned then no overlay will be shown.
 	@MainActor
 	func overlayView() -> AnyView?
 
@@ -24,4 +25,16 @@ public protocol Screen: Sendable {
 	/// Returns `nil` if no custom navigation bar should be used, but the system's one.
 	@MainActor
 	func navigationBar(namespaceId: Namespace.ID) -> AnyView?
+}
+
+public extension Screen {
+	func overlayView() -> AnyView? {
+		// Makes this function being optional to impelent.
+		nil
+	}
+
+	func navigationBar(namespaceId _: Namespace.ID) -> AnyView? {
+		// Makes this function being optional to impelent.
+		nil
+	}
 }
