@@ -12,7 +12,7 @@ struct OverlayExampleView: View {
 	var body: some View {
 		ZStack {
 			Rectangle()
-				.foregroundColor(.red)
+				.foregroundColor(.yellow)
 				.edgesIgnoringSafeArea(.all)
 			Button {
 				withAnimation {
@@ -74,7 +74,7 @@ struct OverlayView: View {
 			ZStack {
 				Rectangle()
 					.foregroundColor(.green)
-					.edgesIgnoringSafeArea(.all)
+					.opacity(0.9)
 				Button {
 					viewModel.overlayIsShown.toggle()
 				} label: {
