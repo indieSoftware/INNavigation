@@ -134,6 +134,14 @@ struct ExampleView: View {
 
 				VStack {
 					Button {
+						router.push(.overlayExample(viewModel: OverlayExampleViewModel()))
+					} label: {
+						Text("Push Overlay Example")
+					}
+				}
+
+				VStack {
+					Button {
 						print("Router-paths: \(router.description)")
 					} label: {
 						Text("Print paths")

@@ -5,7 +5,7 @@ import SwiftUI
 public struct RouterView: View {
 	/// The router which provides the paths for the navigation stack.
 	@EnvironmentObject private var router: Router
-    
+
 	/// The namespace for the custom nav bar's geometry effect.
 	/// Passed to the nav bar so that sub-views can sync their
 	/// animation geometry properly during transition.
@@ -92,10 +92,10 @@ public struct RouterView: View {
 				}
 				// Inject the router dependency to the navigation bar.
 				.environmentObject(router)
-                
-                // Add overlay view to over all content
-                let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
-                lastRoute.screen.overlayView()?.edgesIgnoringSafeArea(.all)
+
+				// Add overlay view to over all content
+				let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
+				lastRoute.screen.overlayView()
 			}
 		}
 	}
