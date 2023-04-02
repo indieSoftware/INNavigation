@@ -40,7 +40,8 @@ public struct RouterView: View {
 		// See also Problem1View show-casing this problem.
 		ZStack {
 			// Only show something if the path is valid.
-			if index < router.paths.count, let path = $router.paths[index] {
+			if index < router.paths.count {
+				let path = $router.paths[index]
 				// Embed the content view in a navigation stack.
 				NavigationStack(path: path.routes) {
 					let rootRoute = path.wrappedValue.root
