@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RouterSleep Enumeration Reference</title>
+    <title>RoutingDirection Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/RouterSleep" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/RoutingDirection" class="dashAnchor"></a>
 
-    <a title="RouterSleep Enumeration Reference"></a>
+    <a title="RoutingDirection Enumeration Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">INNavigation Reference</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      RouterSleep Enumeration Reference
+      RoutingDirection Enumeration Reference
     </p>
 
     <div class="content-wrapper">
@@ -65,7 +65,15 @@
                 <a class="nav-group-task-link" href="../Enums/PresentationType.html">PresentationType</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Enums/RouterSleep.html">RouterSleep</a>
+                <a class="nav-group-task-link" href="../Enums/RoutingDirection.html">RoutingDirection</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
               </li>
             </ul>
           </li>
@@ -73,13 +81,16 @@
             <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/Route.html">Route</a>
+                <a class="nav-group-task-link" href="../Protocols/Screen.html">Screen</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Route.html">Route</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/RouterView.html">RouterView</a>
               </li>
@@ -91,16 +102,15 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>RouterSleep</h1>
+            <h1>RoutingDirection</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RouterSleep</span> <span class="p">:</span> <span class="kt">Double</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RoutingDirection</span> <span class="p">:</span> <span class="kt">Sendable</span></code></pre>
 
                 </div>
               </div>
-            <p>The different times to wait for a transition animation
-before the next step can be safely executed.</p>
+            <p>The different routing directions.</p>
 
           </div>
         </section>
@@ -112,9 +122,9 @@ before the next step can be safely executed.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12INNavigation11RouterSleepO10horizontalyA2CmF"></a>
+                    <a name="/s:12INNavigation16RoutingDirectionO10horizontalyA2CmF"></a>
                     <a name="//apple_ref/swift/Element/horizontal" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12INNavigation11RouterSleepO10horizontalyA2CmF">horizontal</a>
+                    <a class="token" href="#/s:12INNavigation16RoutingDirectionO10horizontalyA2CmF">horizontal</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -122,14 +132,14 @@ before the next step can be safely executed.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The time of a horizontal step (push/pop).</p>
+                        <p>A horizontal step (push/pop).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">horizontal</span> <span class="o">=</span> <span class="mf">0.55</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">horizontal</span></code></pre>
 
                         </div>
                       </div>
@@ -139,9 +149,9 @@ before the next step can be safely executed.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12INNavigation11RouterSleepO8verticalyA2CmF"></a>
+                    <a name="/s:12INNavigation16RoutingDirectionO8verticalyA2CmF"></a>
                     <a name="//apple_ref/swift/Element/vertical" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12INNavigation11RouterSleepO8verticalyA2CmF">vertical</a>
+                    <a class="token" href="#/s:12INNavigation16RoutingDirectionO8verticalyA2CmF">vertical</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -149,14 +159,14 @@ before the next step can be safely executed.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The time of a vertical step (present/dismiss).</p>
+                        <p>A vertical step (present/dismiss).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">vertical</span> <span class="o">=</span> <span class="mf">0.45</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">vertical</span></code></pre>
 
                         </div>
                       </div>
@@ -166,9 +176,63 @@ before the next step can be safely executed.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12INNavigation11RouterSleepO5sleepyyYaF"></a>
+                    <a name="/s:12INNavigation16RoutingDirectionO4noneyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/none" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12INNavigation16RoutingDirectionO4noneyA2CmF">none</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A non-specific direction which doesn&rsquo;t take any time (direct set).</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="k">none</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12INNavigation16RoutingDirectionO6customyACSdcACmF"></a>
+                    <a name="//apple_ref/swift/Element/custom(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12INNavigation16RoutingDirectionO6customyACSdcACmF">custom(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A custom value for passing a sleep duration in seconds.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">custom</span><span class="p">(</span><span class="nv">_</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12INNavigation16RoutingDirectionO5sleepyyYaF"></a>
                     <a name="//apple_ref/swift/Method/sleep()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12INNavigation11RouterSleepO5sleepyyYaF">sleep()</a>
+                    <a class="token" href="#/s:12INNavigation16RoutingDirectionO5sleepyyYaF">sleep()</a>
                     </code>
                       <span class="declaration-note">
                         Asynchronous
@@ -179,7 +243,10 @@ before the next step can be safely executed.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Sleeps for the appropriate time.</p>
+                        <p>Sleeps for the appropriate time for the corresponding step.
+This ensures that a thread is waiting for a transition animation has been ended
+before the next one can be applied.
+If the time is not respected correctly then this can lead to screen discrepancies.</p>
 
                       </div>
                       <div class="declaration">
@@ -196,9 +263,9 @@ before the next step can be safely executed.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:12INNavigation11RouterSleepO5sleep7secondsySd_tYaFZ"></a>
+                    <a name="/s:12INNavigation16RoutingDirectionO5sleep7secondsySd_tYaFZ"></a>
                     <a name="//apple_ref/swift/Method/sleep(seconds:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:12INNavigation11RouterSleepO5sleep7secondsySd_tYaFZ">sleep(seconds:<wbr>)</a>
+                    <a class="token" href="#/s:12INNavigation16RoutingDirectionO5sleep7secondsySd_tYaFZ">sleep(seconds:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Asynchronous
@@ -250,7 +317,7 @@ before the next step can be safely executed.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2022 <a class="link" href="https://github.com/indieSoftware/INNavigation" target="_blank" rel="external noopener">indie-Software</a>. All rights reserved. (Last updated: 2022-10-02)</p>
+      <p>&copy; 2023 <a class="link" href="https://github.com/indieSoftware/INNavigation" target="_blank" rel="external noopener">indie-Software</a>. All rights reserved. (Last updated: 2023-04-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>

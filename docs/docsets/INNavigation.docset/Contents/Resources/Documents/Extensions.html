@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>INNavigation  Reference</title>
+    <title>Extensions  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,8 +14,9 @@
   </head>
   <body>
 
+    <a name="//apple_ref/swift/Section/Extensions" class="dashAnchor"></a>
 
-    <a title="INNavigation  Reference"></a>
+    <a title="Extensions  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -43,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">INNavigation Reference</a>
       <img class="carat" src="img/carat.png" alt=""/>
-      INNavigation  Reference
+      Extensions  Reference
     </p>
 
     <div class="content-wrapper">
@@ -101,28 +102,52 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            
-            <h1 id='innavigation' class='heading'>INNavigation</h1>
-
-<p>Provides an easy accessor which builds on top of SwiftUI&rsquo;s new <code>NavigationStack</code> introduced with iOS 16.</p>
-
-<p>In addition it supports a custom navigation bar which stays on screen even during view transitions.</p>
-<h2 id='overview' class='heading'>Overview</h2>
-
-<p><code>INNavigation</code> uses SwiftUI&rsquo;s <code>NavigationStack</code> for navigation. However, this library provides a <code><a href="Classes/Router.html">Router</a></code> which provides a common interface for navigation and handles the navigation via routes. For that a hierarchy is build up for horizontal and vertical navigation.</p>
-
-<p>With horizontal navigation a push/pop navigation is meant, originally provided by a <code>UINavigationController</code> and in SwiftUI&rsquo; <code>NavigationStack</code>.</p>
-
-<p>A vertical navigation is realized with present/dismiss actions to show or dismiss sheets. Each vertical navigation automatically introduces a new layer for a horizontal navigation.</p>
-
-<p>In addition to the routing management the routing system also supports custom navigation bars which stay on screen simulating a static navigation bar which, however, can change for each screen.</p>
-<h2 id='further-documentation' class='heading'>Further documentation</h2>
-
-<p>How to usa INNavigation: <a href="https://github.com/indieSoftware/INNavigation/blob/master/docu/Usage.md">Usage</a></p>
+            <h1>Extensions</h1>
+            <p>The following extensions are available globally.</p>
 
           </div>
         </section>
 
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sd"></a>
+                    <a name="//apple_ref/swift/Extension/Double" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sd">Double</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>These values are best guesses and might change any time with an iOS update.
+They are used as a workaround for the lack of a callback after a transition animation has finished.
+When these values are not correct anymore then transitions might break where screens get blank
+or not updated.
+This can be validated with the example app when executing multiple transitions one after each other.</p>
+
+                        <a href="Extensions/Double.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">Double</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
 
       </article>
     </div>

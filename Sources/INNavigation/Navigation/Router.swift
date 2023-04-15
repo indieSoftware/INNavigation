@@ -66,7 +66,7 @@ public class Router: ObservableObject, Sendable {
 			return true
 		}
 		guard shouldContinue else { return }
-		await direction.sleep()
+		await Task.sleep(forRoutingDirection: direction)
 		await MainActor.run {
 			enabled = true
 		}
@@ -105,7 +105,7 @@ public class Router: ObservableObject, Sendable {
 			return willBeAnimated
 		}
 		guard shouldContinue else { return }
-		await RoutingDirection.horizontal.sleep()
+		await Task.sleep(forRoutingDirection: .horizontal)
 		await MainActor.run {
 			enabled = true
 		}
