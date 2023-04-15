@@ -20,7 +20,7 @@ struct View2: View {
 				}
 
 				Button {
-					router.push(.view2)
+					viewModel.pushToView2()
 				} label: {
 					Text("Push View2")
 				}
@@ -46,6 +46,7 @@ struct View2: View {
 
 struct View2NavBar: View {
 	@EnvironmentObject var router: Router
+	@ObservedObject var viewModel: ViewModel2
 	let navBarNamespace: Namespace.ID
 
 	var body: some View {
@@ -73,7 +74,7 @@ struct View2NavBar: View {
 
 			VStack {
 				Text("View 2 Title")
-				Text("Subtitle").font(.caption)
+				Text("Parameter: \(viewModel.parameter)").font(.caption)
 			}
 			.matchedGeometryEffect(id: "title", in: navBarNamespace)
 		}
@@ -82,6 +83,7 @@ struct View2NavBar: View {
 }
 
 struct OverlayView2: View {
+	@EnvironmentObject var router: Router
 	@ObservedObject var viewModel: ViewModel2
 
 	var body: some View {
@@ -91,13 +93,23 @@ struct OverlayView2: View {
 					.opacity(0.5)
 					.edgesIgnoringSafeArea(.all)
 
-				Button(action: {
-					viewModel.showOverlay = false
-				}, label: {
-					Text("Hide Overlay")
-						.padding(20)
-						.background(Color.white)
-				})
+				VStack {
+					Button(action: {
+						viewModel.showOverlay = false
+					}, label: {
+						Text("Hide Overlay")
+							.padding(20)
+							.background(Color.white)
+					})
+
+					Button {
+						router.pop()
+					} label: {
+						Text("Pop back")
+							.padding(20)
+							.background(Color.white)
+					}
+				}
 			}
 		}
 	}
@@ -105,21 +117,44 @@ struct OverlayView2: View {
 
 @MainActor
 class ViewModel2: ObservableObject {
+	let parameter: Int
 	@Published var showOverlay: Bool = false
+
+	// Simulates the dependency injection of the router.
+	private var router: Router {
+		NavigationTestApp.router
+	}
+
+	init(parameter: Int) {
+		self.parameter = parameter
+	}
+
+	func pushToView2() {
+		router.push(.view2(parameter: parameter + 1))
+	}
+}
+
+@MainActor
+struct View2Screen: Screen {
+	let id: String = UUID().uuidString
+	let viewModel: ViewModel2
+
+	init(parameter: Int) {
+		viewModel = ViewModel2(parameter: parameter)
+	}
+
+	var contentView: AnyView { AnyView(View2(viewModel: viewModel)) }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(viewModel: viewModel, navBarNamespace: namespaceId))
+	}
+
+	func overlayView() -> AnyView? {
+		AnyView(OverlayView2(viewModel: viewModel))
+	}
 }
 
 extension Route {
 	@MainActor
-	struct View2Screen: Screen {
-		let viewModel: ViewModel2 = .init()
-		let id: String = UUID().uuidString
-		var contentView: AnyView { AnyView(View2(viewModel: viewModel)) }
-		func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(navBarNamespace: namespaceId)) }
-		func overlayView() -> AnyView? {
-			AnyView(OverlayView2(viewModel: viewModel))
-		}
+	static func view2(parameter: Int) -> Route {
+		Route(View2Screen(parameter: parameter))
 	}
-
-	@MainActor
-	static var view2: Route { Route(View2Screen()) }
 }

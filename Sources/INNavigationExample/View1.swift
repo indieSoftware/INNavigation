@@ -17,7 +17,7 @@ struct View1: View {
 				}
 
 				Button {
-					router.push(.view2)
+					router.push(.view2(parameter: 0))
 				} label: {
 					Text("Push View2")
 				}
@@ -68,12 +68,15 @@ struct View1NavBar: View {
 	}
 }
 
-extension Route {
-	struct View1Screen: Screen {
-		let id: String = UUID().uuidString
-		var contentView: AnyView { AnyView(View1()) }
-		func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View1NavBar(navBarNamespace: namespaceId)) }
+@MainActor
+struct View1Screen: Screen {
+	let id: String = UUID().uuidString
+	var contentView: AnyView { AnyView(View1()) }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View1NavBar(navBarNamespace: namespaceId))
 	}
+}
 
+extension Route {
+	@MainActor
 	static var view1: Route { Route(View1Screen()) }
 }

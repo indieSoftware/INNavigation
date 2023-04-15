@@ -100,7 +100,7 @@ struct ExampleView: View {
 					Button {
 						Task {
 							await router.push(.view1)
-							await router.push(.view2)
+							await router.push(.view2(parameter: 0))
 							await router.push(.view1)
 							await router.pop()
 							await router.pop()
@@ -113,7 +113,7 @@ struct ExampleView: View {
 					Button {
 						Task {
 							await router.present(.view1)
-							await router.present(.view2)
+							await router.present(.view2(parameter: 0))
 							await router.present(.view1)
 							await router.dismiss()
 							await router.dismiss()
