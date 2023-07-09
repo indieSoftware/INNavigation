@@ -64,38 +64,38 @@ public struct RouterView: View {
 						// Inject the router dependency to the view hierarchy.
 						.environmentObject(router)
 				}
+				let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
 
 				// Add the nav bar over the content view.
 				VStack(spacing: .zero) {
 					// Get the current visible route representation.
-					let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
 					// Wrap the nav bar in an additional stack which
 					// helps animating the clipping bounds.
 					VStack(spacing: .zero) {
 						// Create the custom nav bar with the namespace passed so that each
 						// nav bar can match the animation for sub-views.
-						(
-							lastRoute.screen.navigationBar(namespaceId: navigationBarNamespace)
-								?? AnyView(Color.clear.frame(height: .zero))
-						)
-						// Match each custom nav bar with the next one so that even
-						// custom nav bars which are not using the namespace animate somehow.
-						.matchedGeometryEffect(id: navigationBarGeometryEffectRootKey, in: navigationBarNamespace)
-						// Mark each custom nav bar as an individual one for SwiftUI,
-						// necessary for the geometry effect to distinct the custom nav bars.
-						.id(lastRoute)
+
+						lastRoute.screen.navigationBar(namespaceId: navigationBarNamespace)
+							?? AnyView(Color.clear.frame(height: .zero))
+
+						Spacer()
 					}
-					// Animate the nav bar transition at all during the screen transition.
-					.animation(.easeOut, value: lastRoute)
 
 					// Push the nav bar at the top of the screen.
 					Spacer()
 				}
 				// Inject the router dependency to the navigation bar.
 				.environmentObject(router)
+				// Mark each custom nav bar as an individual one for SwiftUI,
+				// necessary for the geometry effect to distinct the custom nav bars.
+				.id(lastRoute)
+				// Match each custom nav bar with the next one so that even
+				// custom nav bars which are not using the namespace animate somehow.
+				.matchedGeometryEffect(id: navigationBarGeometryEffectRootKey, in: navigationBarNamespace)
+				// Animate the nav bar transition at all during the screen transition.
+				.animation(.easeOut, value: lastRoute)
 
 				// Add an overlay view on top of all other content.
-				let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
 				lastRoute.screen.overlayView()
 			}
 		}
