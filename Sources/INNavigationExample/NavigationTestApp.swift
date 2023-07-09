@@ -3,10 +3,12 @@ import SwiftUI
 
 @main
 struct NavigationTestApp: App {
+	static let router = Router(root: .exampleView(title: "Root"))
+
 	var body: some Scene {
 		WindowGroup {
 			RouterView()
-				.environmentObject(Router(root: .exampleView(title: "Root")))
+				.environmentObject(Self.router)
 
 			// Replace the RouterView with a problem view from below
 			// Problem1View()

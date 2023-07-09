@@ -64,7 +64,15 @@
                 <a class="nav-group-task-link" href="Enums/PresentationType.html">PresentationType</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/RouterSleep.html">RouterSleep</a>
+                <a class="nav-group-task-link" href="Enums/RoutingDirection.html">RoutingDirection</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Double.html">Double</a>
               </li>
             </ul>
           </li>
@@ -72,13 +80,16 @@
             <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/Route.html">Route</a>
+                <a class="nav-group-task-link" href="Protocols/Screen.html">Screen</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="Structs.html">Structures</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Route.html">Route</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/RouterView.html">RouterView</a>
               </li>
@@ -91,9 +102,19 @@
         <section class="section">
           <div class="section-content top-matter">
             
-            <h1 id='innavigation' class='heading'>INNavigation</h1>
+            <p><img src="https://img.shields.io/badge/iOS-16.0+-brightgreen" alt="iOS Version"> <a href="https://indiesoftware.github.io/INNavigation"><img src="https://indiesoftware.github.io/INNavigation/badge.svg" alt="Documentation Coverage"></a>
+<a href="https://github.com/indieSoftware/INNavigation/blob/master/LICENSE"><img src="https://img.shields.io/github/license/indieSoftware/INNavigation" alt="License"></a>
+<a href="https://github.com/indieSoftware/INNavigation"><img src="https://img.shields.io/github/v/tag/indieSoftware/INNavigation?label=version" alt="GitHub Tag"></a>
+<a href="https://github.com/apple/swift-package-manager"><img src="https://img.shields.io/badge/SPM-compatible-success.svg" alt="SPM compatible"></a></p>
+
+<p><a href="https://github.com/indieSoftware/INNavigation">GitHub Page</a></p>
+
+<p><a href="https://indiesoftware.github.io/INNavigation">Documentation</a></p>
+<h1 id='innavigation' class='heading'>INNavigation</h1>
 
 <p>Provides an easy accessor which builds on top of SwiftUI&rsquo;s new <code>NavigationStack</code> introduced with iOS 16.</p>
+
+<p>In addition it supports a custom navigation bar which stays on screen even during view transitions.</p>
 <h2 id='overview' class='heading'>Overview</h2>
 
 <p><code>INNavigation</code> uses SwiftUI&rsquo;s <code>NavigationStack</code> for navigation. However, this library provides a <code><a href="Classes/Router.html">Router</a></code> which provides a common interface for navigation and handles the navigation via routes. For that a hierarchy is build up for horizontal and vertical navigation.</p>
@@ -101,100 +122,20 @@
 <p>With horizontal navigation a push/pop navigation is meant, originally provided by a <code>UINavigationController</code> and in SwiftUI&rsquo; <code>NavigationStack</code>.</p>
 
 <p>A vertical navigation is realized with present/dismiss actions to show or dismiss sheets. Each vertical navigation automatically introduces a new layer for a horizontal navigation.</p>
+
+<p>In addition to the routing management the routing system also supports custom navigation bars which stay on screen simulating a static navigation bar which, however, can change for each screen.</p>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='spm' class='heading'>SPM</h3>
+
+<p>To include via <a href="https://swift.org/package-manager">SwiftPackageManager</a> add the repository:</p>
+<pre class="highlight plaintext"><code>https://github.com/indieSoftware/INNavigation.git
+</code></pre>
 <h2 id='usage' class='heading'>Usage</h2>
-<h3 id='route' class='heading'>Route</h3>
 
-<p>First a collection of possible routes has to be created. This can be achieved by introducing an enum which implemnets the <code><a href="Protocols/Route.html">Route</a></code> protocol.</p>
-<pre class="highlight plaintext"><code>import INNavigation
-import SwiftUI
+<p>How to use INNavigation: <a href="https://github.com/indieSoftware/INNavigation/blob/master/docu/Usage.md">Usage</a></p>
+<h2 id='changelog' class='heading'>Changelog</h2>
 
-enum ExampleRoute: Route {
-    case exampleView(title: String)
-
-    var view: some View {
-        switch self {
-        case let .exampleView(title):
-            return ExampleView(title: title)
-        }
-    }
-}
-</code></pre>
-
-<p>Here the <code>ExampleRoute</code> is defined with only one single route named <code>exampleView</code>. That means only one screen is defined, but more can be defined here.</p>
-
-<p>The enum case has one associated value <code>title</code>. This is to show-case how to pass parameters to screens.</p>
-
-<p>In the computed <code>view</code> property the concrete view is returned. Usually a view model might be also instantiated here which takes the <code>title</code> as the parameter instead.</p>
-<h3 id='routerview' class='heading'>RouterView</h3>
-
-<p>In the app&rsquo;s root view hierachy the <code><a href="Structs/RouterView.html">RouterView</a></code> has to be used.</p>
-<pre class="highlight plaintext"><code>import INNavigation
-import SwiftUI
-
-@main
-struct NavigationTestApp: App {
-    var body: some Scene {
-        WindowGroup {
-            RouterView&lt;ExampleRoute&gt;()
-                .environmentObject(Router&lt;ExampleRoute&gt;(root: .exampleView(title: "Root")))
-        }
-    }
-}
-</code></pre>
-
-<p>The <code><a href="Structs/RouterView.html">RouterView</a></code> is responsible for providing any navigation code and enables to navigate horizontally or vertically to other screens via routes. Each new vertically layer will have such a <code><a href="Structs/RouterView.html">RouterView</a></code> as its root view so that each layer can use the router for navigation.</p>
-
-<p>The type provided to the <code><a href="Structs/RouterView.html">RouterView</a></code> is the defined route, here <code>ExampleRoute</code>.</p>
-
-<p>A new router instance has to be added as an environment object to the view hierarchy. This environment object is used by the <code><a href="Structs/RouterView.html">RouterView</a></code> to get notified about the routes.</p>
-
-<p>However, to have also access to that <code><a href="Classes/Router.html">Router</a></code> instance in view models it&rsquo;s recommendable to create such an instance before injecting it as an environment object and then inject that same <code><a href="Classes/Router.html">Router</a></code> instance to any view models.</p>
-
-<p>When instantiating the <code><a href="Classes/Router.html">Router</a></code> instance then provide the root route which will reflect which view to show as the root of the view hierarchy.</p>
-<h3 id='router' class='heading'>Router</h3>
-
-<p>The <code><a href="Classes/Router.html">Router</a></code> instance can then be accessed in views when resolving it as an environment object.</p>
-<pre class="highlight plaintext"><code>struct ExampleView: View {
-    @EnvironmentObject var router: Router&lt;ExampleRoute&gt;
-    ...
-}
-</code></pre>
-
-<p>However, most of the time the instance should be injected into view models and used there to navigate to other screens.</p>
-
-<p>When navigating to other screens simply use the <code><a href="Classes/Router.html">Router</a></code>&lsquo;s methods, i.e.:</p>
-<pre class="highlight plaintext"><code>router.push(.exampleView(title: "Pushed"))
-router.pop()
-router.popToRoot()
-router.popAfter(index: 1)
-router.set(routes: .exampleView(title: "Route A"))
-
-router.present(.exampleView(title: "Presented full-screen"), type: .fullScreen)
-router.dismiss()
-</code></pre>
-<h3 id='multi-step-navigation' class='heading'>Multi-step navigation</h3>
-
-<p>It&rsquo;s also possible to use multiple navigation steps. Some are already provided, however, they have to be executed asynchonously because the thread has to sleep in-between of the navigation steps. This is necessary to wait for the navigation animation to finish otherwise the animation will not be visible.</p>
-<pre class="highlight plaintext"><code>Task {
-    await router.multiPopToRoot()
-}
-</code></pre>
-<pre class="highlight plaintext"><code>Task {
-    await router.multiDismissToRoot()
-}
-</code></pre>
-
-<p>It&rsquo;s also possible to create own custom multi-step navigations. For this the router&rsquo;s <code>consecutiveSteps</code> method can be used, i.e.:</p>
-<pre class="highlight plaintext"><code>router.consecutiveSteps { router in
-    router.pop()
-    await RouterSleep.horizontal.sleep()
-    router.present(.exampleView(title: "Presented"))
-    await RouterSleep.vertical.sleep()
-    router.push(.exampleView(title: "Pushed"))
-}
-</code></pre>
-
-<p>Just keep in mind to sleep between each step and be aware that different navigation transitions need a minimal delay time for the animation. So, after a horizontal navigation like push or pop a horizontal sleep time should be waited for. For vertical navigations like present and dismiss the vertical sleep time should be used accordingly.</p>
+<p>See <a href="https://github.com/indieSoftware/INNavigation/blob/master/Changelog.md">Changelog</a> </p>
 
           </div>
         </section>
@@ -203,7 +144,7 @@ router.dismiss()
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2022 <a class="link" href="https://github.com/indieSoftware/INNavigation" target="_blank" rel="external noopener">indie-Software</a>. All rights reserved. (Last updated: 2022-10-02)</p>
+      <p>&copy; 2023 <a class="link" href="https://github.com/indieSoftware/INNavigation" target="_blank" rel="external noopener">indie-Software</a>. All rights reserved. (Last updated: 2023-04-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>

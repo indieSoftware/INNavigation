@@ -1,50 +1,98 @@
 # Usage
 
-## Route and Screen
+## Screen
 
 First, next to each view definition, a screen must be defined which represents that view and acts as a factory for that view. For that a struct has to be defined which implements the `Screen` protocol.
 
-It's not necessary, but recommended to place the screen definition in a `Route` extension. That eases the access later.
+```
+@MainActor
+struct View1Screen: Screen {
+	let id: String = UUID().uuidString
+	var contentView: AnyView { AnyView(View1()) }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { 
+		AnyView(View1NavBar(navBarNamespace: namespaceId))
+	 }
+}
+```
+
+Each screen instance needs its own ID to differentiate it from other screens by the router. Usually a UUID string should be enough.
+
+The `contentView` acts as the factory to create the real view. The view has to be wrapped by `AnyView`.
+
+To implement the `navigationBar` method is optional. When not implemented then nil will be automatically returned which means the view will not provide a custom navigation bar. However, if a custom navigation bar should be supported then return the view back again wrapped by `AnyView`.
+
+A screen also supports an optional overlay view. To provide such an overlay simply implement the `overlayView` method similar to `navigationBar`. If no overlay is needed then simply drop it.
+
+The screen struct can also be used to pass a parameter from one screen to another. Or it can hold a reference to the view model to re-use it for the content view and for the navigation bar:
+
+```
+@MainActor
+struct View2Screen: Screen {
+	let id: String = UUID().uuidString
+	let viewModel: ViewModel2
+
+	init(parameter: Int) {
+		viewModel = ViewModel2(parameter: parameter)
+	}
+
+	var contentView: AnyView { AnyView(View2(viewModel: viewModel)) }
+	func navigationBar(namespaceId: Namespace.ID) -> AnyView? { AnyView(View2NavBar(viewModel: viewModel, navBarNamespace: namespaceId))
+	}
+	func overlayView() -> AnyView? {
+		AnyView(OverlayView2(viewModel: viewModel))
+	}
+}
+```
+
+In this example view2 needs a parameter passed by the previous screen. And two screens need to use the same view model. That's why the view model is created with the passed parameter during the init method of the screen and it will be passed to the corresponding views.
+
+## Route
+
+It's not necessary, but recommended to provide an easy accessor to the route in a `Route` extension:
 
 ```
 extension Route {
-	struct View1Screen: Screen {
-		let id: String = UUID().uuidString
-		var contentView: AnyView { AnyView(View1()) }
-		func navigationBar(namespaceId: Namespace.ID) -> AnyView? { 
-			AnyView(View1NavBar(navBarNamespace: namespaceId))
-		 }
-	}
-
+	@MainActor
 	static var view1: Route { Route(View1Screen()) }
 }
 ```
 
-In the above example the `View1Screen` represents the content view `View1`. The `navigationBar` method creates the custom navigation bar and the static computed property `view1` provides a computed property to return a `Route` for that screen.
-
-It's also possible to pass any parameters to the view during initialization. Simply add some properties to the struct and use a static function instead of a static property for the route creation.
+When passing parameters is necessary then use a function instead of a computed property:
 
 ```
 extension Route {
-	struct ExampleViewScreen: Screen {
-		let id: String = UUID().uuidString
-		let title: String
-		var contentView: AnyView { AnyView(ExampleView(title: title)) }
-		func navigationBar(namespaceId _: Namespace.ID) -> AnyView? { nil }
-		var hideSystemNavigationBar: Bool { false }
+	@MainActor	
+	static func view2(parameter: Int) -> Route {
+		Route(View2Screen(parameter: parameter))
 	}
-
-	static func exampleView(title: String) -> Route { Route(ExampleViewScreen(title: title)) }
 }
 ```
 
-If a view should use the system's navigation bar instead of a custom one then simply pass `nil` as the `navigationBar` result.
+## View
 
-The custom navigation bar as well as the content view are plain views, just embedded into `AnyView`s to pass them around.
+The content view is a typical common view, so nothing special needs to be taken care here.
 
-However, for a custom navigation bar it might be interesting to inject the router reference via an `EnvironmentObject`. That can then be used to navigate via custom buttons in the navigation bar.
+However, since the view is managed by a RouterView the `Router` gets automatically injected as an `EnvironmentObject`. Therefore, it's possible for a view to access the router to trigger navigations from within the view itself without relying on a view model:
 
-The router uses a `Namespace` for animating the custom navigation bar. This namespace is passed to the screen's factory method so that it can pass it to the custom navigation bar view. The view can then use the namespace with `matchedGeometryEffect` modifiers to animate sub-views over different navigation bar views. This helps animating sub-views during transitioning the screens.
+```
+struct View1: View {
+	@EnvironmentObject var router: Router
+
+	var body: some View {
+		Button {
+			router.push(.view1)
+		} label: {
+			Text("Push View1")
+		}
+	}	
+}
+```
+
+However, this approach is not recommended. Instead use view models and inject the router to the view model and let the view model decide if and where to navigate to. However, this needs a dependency injection system to inject the router instance into the view model.
+
+Any navigation bar or overlay works similarly to the content view. They are individual views in the view hierarchy which also get the router injected as an `EnvironmentObject` if necessary.
+
+The router uses a `Namespace` for animating the custom navigation bar. This namespace is passed to the screen's factory method so that it can pass it further down to the custom navigation bar view. The navigation bar view can then use the namespace with `matchedGeometryEffect` modifiers to animate sub-views over different navigation bar views. This helps animating sub-views during transitioning the screens.
 
 ```
 struct View1NavBar: View {
@@ -86,37 +134,26 @@ import SwiftUI
 
 @main
 struct NavigationTestApp: App {
+	static let router = Router(root: .exampleView(title: "Root"))
+
 	var body: some Scene {
 		WindowGroup {
 			RouterView()
-				.environmentObject(Router(root: .exampleView(title: "Root")))
+				.environmentObject(Self.router)
 		}
 	}
 }
 ```
 
+The router instance doesn't need to be kept in a static variable, but it has to be injected to the view hierarchy as an `environmentObject` because the `RouterView` will need it to get notified about routes. 
+
+However, to have also access to that `Router` instance in view models it's recommendable to create such an instance before injecting it as an environment object and then inject that same `Router` instance to any view models via a dependency injection system.
+
 The `RouterView` is responsible for providing any navigation code and enables to navigate horizontally or vertically to other screens via routes. Each new vertically layer will have such a `RouterView` as its root view so that each layer can use the router for navigation.
 
-The type provided to the `RouterView` is the defined route, here `ExampleRoute`.
-
-A new router instance has to be added as an environment object to the view hierarchy. This environment object is used by the `RouterView` to get notified about the routes.
-
-However, to have also access to that `Router` instance in view models it's recommendable to create such an instance before injecting it as an environment object and then inject that same `Router` instance to any view models.
-
-When instantiating the `Router` instance then provide the root route which will reflect which view to show as the root of the view hierarchy.
+When instantiating the `Router` instance then provide the root route which will reflect which view to show as the root of the view hierarchy. This is already a route.
 
 ## Router
-
-The `Router` instance can then be accessed in views when resolving it as an environment object.
-
-```
-struct ExampleView: View {
-	@EnvironmentObject var router: Router<ExampleRoute>
-	...
-}
-```
-
-However, most of the time the instance should be injected into view models and used there to navigate to other screens.
 
 When navigating to other screens simply use the `Router`'s methods, i.e.:
 
@@ -144,6 +181,6 @@ Task {
 }
 ```
 
-SwiftUI automatically blocks all interactions in a transitioning content view. However, the custom navigation bar is a view outside of the NavigationStack and thus is uneffected by that block. To prevent any routing during such a transition which might break the view hierarchy, the router automatically disables itself during a transition animation.
+SwiftUI automatically blocks all interactions in a transitioning content view. However, the custom navigation bar is a view outside of the NavigationStack and thus is uneffected by that blocking behavior. To prevent any routing during such a transition which might break the view hierarchy, the router automatically disables itself during a transition animation.
 
 Keep in mind that the delay for waiting for the animation is time based. Therefore, when enabling "Slow Animations" in the simulator then the animation will take longer than the delay and when interacting with the router after the delay, but before the slow animation has finished then this might break the routing system and the display of the view.
