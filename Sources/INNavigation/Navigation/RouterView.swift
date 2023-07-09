@@ -64,6 +64,8 @@ public struct RouterView: View {
 						// Inject the router dependency to the view hierarchy.
 						.environmentObject(router)
 				}
+
+				// Needs to be saved locally here to prevent animation glitches.
 				let lastRoute = path.wrappedValue.routes.last ?? path.wrappedValue.root
 
 				// Add the nav bar over the content view.
