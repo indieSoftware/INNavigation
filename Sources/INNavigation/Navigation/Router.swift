@@ -218,7 +218,7 @@ public class Router: ObservableObject, Sendable {
 	// MARK: - Vertical Navigation
 
 	/// Spawns a Task and runs the async method `present(_:type:)`.
-	public func present(_ route: Route, type: PresentationType = .sheet) {
+	public func present(_ route: Route, type: PresentationType = .sheet(detent: [.large])) {
 		Task {
 			await present(route, type: type)
 		}
@@ -230,13 +230,13 @@ public class Router: ObservableObject, Sendable {
 	///
 	/// - parameter route: The view representing route.
 	/// - parameter type: The type of vertical presentation, e.g. as a sheet or full-screen covering modal view.
-	public nonisolated func present(_ route: Route, type: PresentationType = .sheet) async {
+	public nonisolated func present(_ route: Route, type: PresentationType = .sheet(detent: [.large])) async {
 		await transition(direction: .vertical) {
 			applyPresent(route, type: type)
 		}
 	}
 
-	func applyPresent(_ route: Route, type: PresentationType = .sheet) {
+	func applyPresent(_ route: Route, type: PresentationType = .sheet(detent: [.large])) {
 		let routerPath = HorizontalPath(root: route, presentationType: type)
 		paths.append(routerPath)
 	}

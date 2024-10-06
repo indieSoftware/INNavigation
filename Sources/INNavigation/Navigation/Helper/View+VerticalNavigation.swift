@@ -23,7 +23,7 @@ extension View {
 		.sheet(
 			item: Binding<PresentationInfo?>(
 				get: {
-					guard binding.wrappedValue?.presentationType == .sheet else {
+					guard binding.wrappedValue?.presentationType != .fullScreen else {
 						return nil
 					}
 					return binding.wrappedValue
@@ -31,7 +31,12 @@ extension View {
 			),
 			onDismiss: binding.wrappedValue?.onDismiss,
 			content: { presentationItem in
-				RouterView(index: presentationItem.index)
+				if case let .sheet(detent) = presentationItem.presentationType {
+					RouterView(index: presentationItem.index)
+						.presentationDetents(detent)
+				} else {
+					RouterView(index: presentationItem.index)
+				}
 			}
 		)
 	}
