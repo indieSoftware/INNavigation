@@ -31,9 +31,9 @@ extension View {
 			),
 			onDismiss: binding.wrappedValue?.onDismiss,
 			content: { presentationItem in
-				if case let .sheet(detent) = presentationItem.presentationType {
+				if case let .sheet(detents) = presentationItem.presentationType {
 					RouterView(index: presentationItem.index)
-						.presentationDetents(detent)
+						.presentationDetents(detents)
 				} else {
 					RouterView(index: presentationItem.index)
 				}
