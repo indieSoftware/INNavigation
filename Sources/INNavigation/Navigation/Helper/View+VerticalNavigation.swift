@@ -23,16 +23,27 @@ extension View {
 		.sheet(
 			item: Binding<PresentationInfo?>(
 				get: {
-					guard binding.wrappedValue?.presentationType == .sheet else {
-						return nil
-					}
-					return binding.wrappedValue
+                    guard let wrappedValue = binding.wrappedValue else {
+                        return nil
+                    }
+                    switch wrappedValue.presentationType {
+                    case .sheet:
+                        return wrappedValue
+                    case .fullScreen:
+                        return nil
+                    }
 				}, set: { _ in }
 			),
 			onDismiss: binding.wrappedValue?.onDismiss,
 			content: { presentationItem in
-				RouterView(index: presentationItem.index)
-			}
+                switch presentationItem.presentationType {
+                case .fullScreen:
+                    RouterView(index: presentationItem.index)
+                case .sheet(detents: let detents):
+                    RouterView(index: presentationItem.index)
+                        .presentationDetents(detents)
+                }
+            }
 		)
 	}
 }
