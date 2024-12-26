@@ -122,7 +122,7 @@ class ViewModel2: ObservableObject {
 
 	// Simulates the dependency injection of the router.
 	private var router: Router {
-		NavigationTestApp.router
+		INNavigationExample.router
 	}
 
 	init(parameter: Int) {

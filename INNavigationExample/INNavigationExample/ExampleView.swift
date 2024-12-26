@@ -42,9 +42,15 @@ struct ExampleView: View {
 					}
 
 					Button {
-						router.present(.exampleView(title: "Presented sheet"), type: .sheet)
+						router.present(.exampleView(title: "Presented sheet"), type: .sheet(detents: [.large]))
 					} label: {
-						Text("Present sheet")
+						Text("Present sheet (large detents)")
+					}
+
+					Button {
+						router.present(.exampleView(title: "Presented sheet"), type: .sheet(detents: [.medium]))
+					} label: {
+						Text("Present sheet (medium detents)")
 					}
 
 					Button {
@@ -74,7 +80,7 @@ struct ExampleView: View {
 					}
 
 					Button {
-						router.dismissToRootAndPresent(.exampleView(title: "Complex presented"), type: .sheet)
+						router.dismissToRootAndPresent(.exampleView(title: "Complex presented"), type: .sheet(detents: [.large]))
 					} label: {
 						Text("Dismiss to root and present")
 					}

@@ -2,7 +2,7 @@ import INNavigation
 import SwiftUI
 
 @main
-struct NavigationTestApp: App {
+struct INNavigationExample: App {
 	static let router = Router(root: .exampleView(title: "Root"))
 
 	var body: some Scene {

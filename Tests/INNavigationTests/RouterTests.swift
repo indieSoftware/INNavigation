@@ -271,7 +271,7 @@ final class RouterTests: XCTestCase {
 		XCTAssertEqual(result[0].presentationType, .fullScreen)
 		XCTAssertEqual(result[0].root, .testRoute1)
 		XCTAssertEqual(result[0].routes, [])
-		XCTAssertEqual(result[1].presentationType, .sheet)
+		XCTAssertEqual(result[1].presentationType, .sheet(detents: [.large]))
 		XCTAssertEqual(result[1].root, .testRoute2)
 		XCTAssertEqual(result[1].routes, [])
 	}
@@ -294,7 +294,7 @@ final class RouterTests: XCTestCase {
 	func testPresentMultipleScreens() throws {
 		let sut = Router(root: .testRoute1)
 
-		sut.applyPresent(.testRoute2, type: .sheet)
+		sut.applyPresent(.testRoute2, type: .sheet(detents: [.large]))
 		sut.applyPresent(.testRoute2, type: .fullScreen)
 
 		let result = sut.paths
@@ -302,7 +302,7 @@ final class RouterTests: XCTestCase {
 		XCTAssertEqual(result[0].presentationType, .fullScreen)
 		XCTAssertEqual(result[0].root, .testRoute1)
 		XCTAssertEqual(result[0].routes, [])
-		XCTAssertEqual(result[1].presentationType, .sheet)
+		XCTAssertEqual(result[1].presentationType, .sheet(detents: [.large]))
 		XCTAssertEqual(result[1].root, .testRoute2)
 		XCTAssertEqual(result[1].routes, [])
 		XCTAssertEqual(result[2].presentationType, .fullScreen)
@@ -366,7 +366,7 @@ final class RouterTests: XCTestCase {
 		XCTAssertEqual(result[0].presentationType, .fullScreen)
 		XCTAssertEqual(result[0].root, .testRoute1)
 		XCTAssertEqual(result[0].routes, [])
-		XCTAssertEqual(result[1].presentationType, .sheet)
+		XCTAssertEqual(result[1].presentationType, .sheet(detents: [.large]))
 		XCTAssertEqual(result[1].root, .testRoute3)
 		XCTAssertEqual(result[1].routes, [])
 	}

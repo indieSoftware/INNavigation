@@ -47,7 +47,7 @@ public class Router: ObservableObject, Sendable {
 	private var enabled: Bool = true
 
 	/// Initializes the router with a root view representation.
-	public nonisolated init(root: Route) {
+	public init(root: Route) {
 		// The presentation type for the root path is not important.
 		_horizontalPaths = Published(initialValue: [HorizontalPath(root: root, presentationType: .fullScreen)])
 	}
@@ -320,7 +320,9 @@ public class Router: ObservableObject, Sendable {
 // MARK: - CustomStringConvertible
 
 extension Router: CustomStringConvertible {
-	public var description: String {
-		"\(paths)"
+	public nonisolated var description: String {
+		MainActor.assumeIsolated {
+			"\(paths)"
+		}
 	}
 }

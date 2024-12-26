@@ -28,7 +28,7 @@ public struct RouterView: View {
 	/// - parameter index: The vertical index of this path.
 	/// Has to be 1 or higher, because 0 would be the root path and everything
 	/// higher is the presented from this root path.
-	nonisolated init(index: Int) {
+	init(index: Int) {
 		precondition(index > 0)
 		self.index = index
 	}

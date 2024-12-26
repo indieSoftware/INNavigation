@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "AC5FE725-E8AD-43E0-B6C3-73137AA0649C",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:..",
+        "identifier" : "INNavigationTests",
+        "name" : "INNavigationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
